@@ -1,7 +1,7 @@
 import React, { useRef, useEffect } from 'react';
 import { StyleSheet, View, Pressable, Animated, Text } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import useStore from '../store/useStore';
+import useStore from '../../store/useStore';
 
 const EggClicker = () => {
   //Used for scaling the egg higher when pressed
@@ -69,7 +69,7 @@ const EggClicker = () => {
         <Pressable onPress={handlePress}>
             {/* Animated Image allows for scaling animations */}
             <Animated.Image
-            source={require('../assets/egg.jpg')}
+            source={require('../../assets/egg.jpg')}
             style={[styles.egg, { transform: [{ scale: scaleAnim }] }]}
             />
         </Pressable>
