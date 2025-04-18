@@ -69,7 +69,7 @@ const EggClicker = () => {
         <Pressable onPress={handlePress}>
             {/* Animated Image allows for scaling animations */}
             <Animated.Image
-            source={require('../../assets/egg.jpg')}
+            source={require('../../assets/Dragons/Red/egg_sprites/sprite_0.png')}
             style={[styles.egg, { transform: [{ scale: scaleAnim }] }]}
             />
         </Pressable>
