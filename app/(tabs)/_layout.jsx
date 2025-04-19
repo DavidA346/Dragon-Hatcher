@@ -15,14 +15,18 @@ const TabsLayout = () => {
         >      
             <Tabs.Screen name="index"
             options={{
-                headerTitle: "DRAGON CATCHER",
+              headerShown: false,
                 tabBarLabel: ({ focused }) => (
                     <Text style={{
                       fontSize: 20,
-                      color: focused ? 'black' : '#999',
+                      opacity: focused ? 1 : 0.5,
                       marginTop: 20,
                     }}>
-                      HATCH
+                        <Image source={require('../../assets/titles/Hatch_text.png')}
+                        style={{
+                          resizeMode: 'contain',
+
+                        }}></Image>
                     </Text>
                   ),
 
@@ -42,14 +46,19 @@ const TabsLayout = () => {
 
             <Tabs.Screen name="shop"
             options={{
-                headerTitle: "STORE",
+              headerShown: false,
+              
                 tabBarLabel: ({ focused }) => (
                     <Text style={{
                       fontSize: 20,
-                      color: focused ? 'black' : '#999',
+                      opacity: focused ? 1 : 0.5,
                       marginTop: 20,
                     }}>
-                      STORE
+                      <Image source={require('../../assets/titles/Store_text.png')}
+                        style={{
+                          resizeMode: 'contain',
+                          
+                        }}></Image>
                     </Text>
                   ),
 
@@ -69,14 +78,18 @@ const TabsLayout = () => {
 
              <Tabs.Screen name="inventory"
             options={{
-                headerTitle: "BROOD",
+                headerShown: false,
+                
                 tabBarLabel: ({ focused }) => (
                     <Text style={{
-                      fontSize: 20,
-                      color: focused ? 'black' : '#999',
+                      opacity: focused ? 1 : 0.5,
                       marginTop: 20,
                     }}>
-                      BROOD
+                      <Image source={require('../../assets/titles/Brood_text.png')}
+                        style={{
+                          resizeMode: 'contain',
+                          
+                        }}></Image>
                     </Text>
                   ),
 
