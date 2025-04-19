@@ -12,7 +12,7 @@ const useStore = create((set) => ({
     const savedCurrency = await AsyncStorage.getItem('currency');
     //If saved Currency is not 0 then set it to a number of base 10
     if (savedCurrency !== null) {
-      set({ currency: parseInt(savedCurrency, 10) });
+      set({ currency: parseInt(savedCurrency, 10) || 0 });
     }
   },
 
