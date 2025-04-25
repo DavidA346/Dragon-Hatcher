@@ -1,5 +1,5 @@
 import React, { useRef, useEffect } from 'react';
-import { StyleSheet, View, Pressable, Animated, Text } from 'react-native';
+import { StyleSheet, View, Pressable, Animated, Text, ImageBackground } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import useStore from '../../store/useStore';
 
@@ -64,6 +64,11 @@ const EggClicker = () => {
   return (
     //Handles the safeview of the top and bottom of the screen
     <SafeAreaView style={styles.safeArea}>
+      <ImageBackground
+        source = {require('../../assets/backgrounds/home_background.jpg')}
+        style={styles.backgroundImage}
+        >
+          <Text style={styles.homepageText}>Dragon Hatcher</Text>
         <View style={styles.container}>
         {/* Pressable calls handlePress when the image is pressed */}
         <Pressable onPress={handlePress}>
@@ -94,6 +99,7 @@ const EggClicker = () => {
             </Animated.Text>
         )}
         </View>
+      </ImageBackground>
     </SafeAreaView>
   );
 };
@@ -127,5 +133,21 @@ const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
     backgroundColor: '#f9fafc',
+  },
+  backgroundImage: {
+    flex: 1,
+    resizeMode: 'cover',
+  },
+  homepageText:{
+    position: 'absolute',
+    top: 40,
+    //alighnSelf: 'center',
+    left: 0,
+    right: 0,
+    textAlign: 'center',
+    fontSize: 32,
+    fontWeight: '700',
+    color: 'Black',
+    zIndex: 10,
   }
 });
