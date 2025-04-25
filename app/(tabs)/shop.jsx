@@ -1,45 +1,43 @@
-import { StyleSheet, Text, View, ImageBackground } from "react-native"
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { StyleSheet, Text, View, ImageBackground, Image } from "react-native"
 
 const Shop = () => {
     return (
-        <SafeAreaView style={styles.safeArea}>
-            <ImageBackground
-                    source = {require('../../assets/backgrounds/shop_background.png')}
-                    style={styles.backgroundImage}
-            >
-            <Text style={styles.headerText}>SHOP</Text>
-            {/* <View style={styles.container}>
-                <Text>Shop</Text>
-            </View> */}
-            </ImageBackground>
-        </SafeAreaView>
+        <ImageBackground
+            source = {require('../../assets/backgrounds/resized_shop_background.png')}
+            style={styles.backgroundImage}
+        >
+            <View style={styles.container}>
+                <View style={styles.title_container}>
+                    {/* Displays the BROOD image to the screen */}
+                    <Image
+                        source={require('../../assets/titles/Store_text.png')}
+                        style={styles.title}
+                    >
+                    </Image>
+                </View>
+            </View>
+        </ImageBackground>
     )
 }
 
 export default Shop
 
 const styles = StyleSheet.create({
-    // container: {
-    //     flex: 1,
-    //     alignItems: 'center',
-    //     justifyContent: 'center'
-    // },
-    safeArea: {
-        flex: 1,
-        backgroundColor: 'transparent',   // so you can see any background behind it
-    },
-    headerText: {
-        position: 'absolute',
-        top: 40,                // adjust as needed for status‐bar / notch
-        alignSelf: 'center',    // center horizontally
-        fontSize: 32,
-        fontWeight: '700',
-        color: '#000ffff',
-        zIndex: 10,
+    container: {
+        justifyContent: 'center',
+        alignItems: 'center',
     },
     backgroundImage: {
         flex: 1,
-        resizeMode: 'cover',
-      },
+        resizeMode: 'contain',  
+    },
+
+    title: {
+        width: 150,
+        resizeMode: 'contain',
+    },
+    
+    title_container: {
+        paddingTop: '6%',
+    },
 })

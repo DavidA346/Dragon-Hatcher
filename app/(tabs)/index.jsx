@@ -1,6 +1,5 @@
 import React, { useRef, useEffect } from 'react';
-import { StyleSheet, View, Pressable, Animated, Text, ImageBackground } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { StyleSheet, View, Pressable, Animated, Text, ImageBackground, Image } from 'react-native';
 import useStore from '../../store/useStore';
 
 const EggClicker = () => {
@@ -63,44 +62,51 @@ const EggClicker = () => {
   //Renders everything to the screen
   return (
     //Handles the safeview of the top and bottom of the screen
-    <SafeAreaView style={styles.safeArea}>
       <ImageBackground
         source = {require('../../assets/backgrounds/home_background.jpg')}
         style={styles.backgroundImage}
         >
-          <Text style={styles.homepageText}>Dragon Hatcher</Text>
         <View style={styles.container}>
-        {/* Pressable calls handlePress when the image is pressed */}
-        <Pressable onPress={handlePress}>
-            {/* Animated Image allows for scaling animations */}
-            <Animated.Image
-            source={require('../../assets/Dragons/Red/egg_sprites/sprite_0.png')}
-            style={[styles.egg, { transform: [{ scale: scaleAnim }] }]}
-            />
-        </Pressable>
-
-        {/* First compare if currency is > 0 in order to display stored score from Zustand */}
-        {currency > 0 && (
-        <Text style={styles.currency}>Currency: {currency}</Text>
-        )}
-
-        {/* Handles +1 animation */}
-        {plusOneOpacity && (
-            <Animated.Text
-            style={[
-                styles.plusOne,
-                {
-                opacity: plusOneOpacity,
-                transform: [{ translateY: plusOneY }],
-                },
-            ]}
+          <View style={styles.title_container}>
+            {/* Displays the BROOD image to the screen */}
+            <Image
+              source={require('../../assets/titles/Dragon_Hatcher_text.png')}
+              style={styles.title}
             >
-            +1
-            </Animated.Text>
-        )}
+            </Image>
+          </View>
+        {/* Pressable calls handlePress when the image is pressed */}
+          <View style={styles.eggWrapper}>
+            <Pressable onPress={handlePress}>
+                {/* Animated Image allows for scaling animations */}
+                <Animated.Image
+                source={require('../../assets/Dragons/Red/egg_sprites/sprite_0.png')}
+                style={[styles.egg, { transform: [{ scale: scaleAnim }] }]}
+                />
+            </Pressable>
+
+            {/* First compare if currency is > 0 in order to display stored score from Zustand */}
+            {currency > 0 && (
+            <Text style={styles.currency}>Currency: {currency}</Text>
+            )}
+
+            {/* Handles +1 animation */}
+            {plusOneOpacity && (
+                <Animated.Text
+                style={[
+                    styles.plusOne,
+                    {
+                    opacity: plusOneOpacity,
+                    transform: [{ translateY: plusOneY }],
+                    },
+                ]}
+                >
+                +1
+                </Animated.Text>
+            )}
+          </View>
         </View>
       </ImageBackground>
-    </SafeAreaView>
   );
 };
 
@@ -109,45 +115,48 @@ export default EggClicker;
 //Styling for the components
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
   },
+
   egg: {
     width: 200,
     height: 200,
   },
+
   plusOne: {
     position: 'absolute',
-    top: '30%',
-    fontSize: 30,
+    top: '10%',
+    fontSize: 50,
     color: 'black',
     fontWeight: 'bold',
   },
+
   currency: {
     fontSize: 24,
     fontWeight: 'bold',
     marginTop: 20,
     color: 'black',
   },
-  safeArea: {
-    flex: 1,
-    backgroundColor: '#f9fafc',
-  },
+
   backgroundImage: {
     flex: 1,
-    resizeMode: 'cover',
+    resizeMode: 'stretch',
   },
-  homepageText:{
-    position: 'absolute',
-    top: 40,
-    //alighnSelf: 'center',
-    left: 0,
-    right: 0,
-    textAlign: 'center',
-    fontSize: 32,
-    fontWeight: '700',
-    color: 'Black',
-    zIndex: 10,
-  }
+
+  title: {
+    width: 350,
+    resizeMode: 'contain',
+  }, 
+
+  title_container: {
+    paddingTop: '15%',
+    paddingBottom: '65%',
+  },
+
+  eggWrapper: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    position: 'relative',
+  },
 });
