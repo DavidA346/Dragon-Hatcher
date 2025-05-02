@@ -1,28 +1,23 @@
 import { StyleSheet, Text, View, ImageBackground, Image, FlatList, Pressable } from "react-native"
 
 //Holds the dragons in their cards
-const firstDragonRow = [
-    { id: '1', image: require('../../assets/Wyverns/Blue-Green/adult.gif')},
-    { id: '2', image: require('../../assets/Dragons/White-Violet/baby.gif')},
-    { id: '3', image: require('../../assets/Dragons/Gold/adult.gif')},
+const dragonCollection = [
+    { id: '1', image: require('../../assets/Dragons/Blue-Orange/adult.gif')},
+    { id: '2', image: require('../../assets/Dragons/Gold/adult.gif')},
+    { id: '3', image: require('../../assets/Dragons/Green/baby.gif')},
+    { id: '4', image: require('../../assets/Dragons/Orange/baby.gif')},
+    { id: '5', image: require('../../assets/Dragons/Red/adult.gif')},
+    { id: '6', image: require('../../assets/Dragons/White-Violet/baby.gif')}
 ];
 
-const secondDragonRow = [
-    { id: '1', image: require('../../assets/Wyverns/Brown-Green/adult.gif')},
-    { id: '2', image: require('../../assets/Dragons/Orange/adult.gif')},
-    { id: '3', image: require('../../assets/Dragons/Blue-Orange/adult.gif')},
+const drakeCollection = [
+    { id: '7', image: require('../../assets/Drakes/Black-Violet/baby.gif')},
+    { id: '8', image: require('../../assets/Drakes/Green-Red/adult.gif')}
 ];
 
-const thirdDragonRow = [
-    { id: '1', image: require('../../assets/Drakes/Black-Violet/adult.gif')},
-    { id: '2', image: require('../../assets/Wyverns/Blue-Green/baby.gif')},
-    { id: '3', image: require('../../assets/Dragons/Green/adult.gif')},
-];
-
-const fourthDragonRow = [
-    { id: '1', image: require('../../assets/Drakes/Green-Red/adult.gif')},
-    { id: '2', image: require('../../assets/Dragons/White-Violet/adult.gif')},
-    { id: '3', image: require('../../assets/Dragons/Red/adult.gif')},
+const wyvernCollection = [
+    { id: '9', image: require('../../assets/Wyverns/Blue-Green/baby.gif')},
+    { id: '10', image: require('../../assets/Wyverns/Brown-Green/adult.gif')}
 ];
 
 const Inventory = () => {
@@ -59,16 +54,16 @@ const Inventory = () => {
                 </View>
 
                 {/* Displays the top section to the screen */}
-                <View style={styles.topSection}>
+                <View style={styles.statSection}>
                     <View>
-                        <Text style={styles.titles}>Totals</Text>
-                        <Text style={styles.dragonText}>Dragons: 9</Text>
-                        <Text style={styles.drakesText}>Drakes: 9</Text>
-                        <Text style={styles.wyvernsText}>Wyverns: 9</Text>
+                        <Text style={styles.stats}>Totals</Text>
+                        <Text style={styles.dragonText}>Dragons: 6</Text>
+                        <Text style={styles.drakesText}>Drakes: 2</Text>
+                        <Text style={styles.wyvernsText}>Wyverns: 2</Text>
                     </View>
 
                     <View>
-                        <Text style={styles.titles}>Species</Text>
+                        <Text style={styles.stats}>Species</Text>
                         <Text style={styles.dragonText}>Dragons: 6/6</Text>
                         <Text style={styles.drakesText}>Drakes: 2/2</Text>
                         <Text style={styles.wyvernsText}>Wyverns: 2/2</Text>
@@ -76,33 +71,31 @@ const Inventory = () => {
                 </View>
 
                  {/* Displays the dragon card lists to the screen */}
-                <FlatList
-                    data={firstDragonRow}
-                    keyExtractor={item => item.id}
-                    renderItem={renderItem}
-                    horizontal={true} 
+                 <FlatList  data={dragonCollection}
+                            renderItem={renderItem}
+                            keyExtractor={(item) => item.id}
+                            numColumns={3}
+                            contentContainerStyle={styles.dragonsGrid}
+                            showsVerticalScrollIndicator={false}
                 />
 
-                <FlatList
-                    data={secondDragonRow}
-                    keyExtractor={item => item.id}
-                    renderItem={renderItem}
-                    horizontal={true} 
-                />
+                <FlatList  data={drakeCollection}
+                            renderItem={renderItem}
+                            keyExtractor={(item) => item.id}
+                            numColumns={2}
+                            contentContainerStyle={styles.drakesGrid}
+                            style={styles.TwoColumnList}
+                            showsVerticalScrollIndicator={false}
+                /> 
 
-                <FlatList
-                    data={thirdDragonRow}
-                    keyExtractor={item => item.id}
-                    renderItem={renderItem}
-                    horizontal={true} 
-                />
-
-                <FlatList
-                    data={fourthDragonRow}
-                    keyExtractor={item => item.id}
-                    renderItem={renderItem}
-                    horizontal={true} 
-                />
+                <FlatList  data={wyvernCollection}
+                            renderItem={renderItem}
+                            keyExtractor={(item) => item.id}
+                            numColumns={2}
+                            contentContainerStyle={styles.wyvernsGrid}
+                            style={styles.TwoColumnList}
+                            showsVerticalScrollIndicator={false}
+                />              
             </View>
         </ImageBackground>
     )
@@ -113,6 +106,7 @@ export default Inventory
 //Styling for all the components above
 const styles = StyleSheet.create({
     container: {
+        flex: 1,
         alignItems: 'center',
         justifyContent: 'center',
     },
@@ -130,33 +124,54 @@ const styles = StyleSheet.create({
 
     card: {
         borderRadius: 20,
-        marginBottom: 30,
-        height: 118,
-        width: 120,
-        alignSelf: 'center',
+        margin: 8,
+        // backgroundColor: '#cad0d0',
+        width: '30%',
         alignItems: 'center',
-        marginRight: 10,
-        marginLeft: 10,
+        justifyContent: 'center',
       },
 
-      image: {
-        width: 110,
-        height: 100,
-        borderRadius: 8,
-        resizeMode: 'contain',
-      },
+    dragonsGrid: {
+    // backgroundColor: '#fff',
+    paddingHorizontal: 20,
+    paddingLeft: 1,
+    justifyContent: 'center',
+    },
 
-      titles: {
-        fontWeight: 'bold',
-        textDecorationLine: 'underline',
-        fontSize: 18,
-      },
+    TwoColumnList: {
+    // backgroundColor: '#fff',
+    width: '125%'
+    },
 
-      topSection: {
-        flexDirection: 'row',
-        gap: 120,
-        paddingBottom: 30,
-      },
+    drakesGrid: {
+    // backgroundColor: '#fff',
+    paddingLeft: '23%',
+    justifyContent: 'center',
+    },
+
+    wyvernsGrid: {
+    // backgroundColor: '#fff',
+    paddingLeft: '23%',
+    justifyContent: 'center',
+    },
+
+    image: {
+    width: 100,
+    height: 100,
+    marginLeft: '25%'
+    },
+
+    stats: {
+    fontWeight: 'bold',
+    textDecorationLine: 'underline',
+    fontSize: 18,
+    },
+
+    statSection: {
+    flexDirection: 'row',
+    gap: 120,
+    paddingBottom: 10,
+    },
 
     dragonText: {
         fontSize: 18,
