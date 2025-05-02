@@ -132,45 +132,45 @@ const styles = StyleSheet.create({
       },
 
     dragonsGrid: {
-        // backgroundColor: '#fff',
-        paddingHorizontal: 20,
-        paddingLeft: 1,
-        justifyContent: 'center',
+    // backgroundColor: '#fff',
+    paddingHorizontal: 20,
+    paddingLeft: 1,
+    justifyContent: 'center',
     },
 
     TwoColumnList: {
-        // backgroundColor: '#fff',
-        width: '125%'
+    // backgroundColor: '#fff',
+    width: '125%'
     },
 
     drakesGrid: {
-        // backgroundColor: '#fff',
-        paddingLeft: '23%',
-        justifyContent: 'center',
+    // backgroundColor: '#fff',
+    paddingLeft: '23%',
+    justifyContent: 'center',
     },
 
     wyvernsGrid: {
-        // backgroundColor: '#fff',
-        paddingLeft: '23%',
-        justifyContent: 'center',
+    // backgroundColor: '#fff',
+    paddingLeft: '23%',
+    justifyContent: 'center',
     },
 
     image: {
-        width: 100,
-        height: 100,
-        marginLeft: '25%'
+    width: 100,
+    height: 100,
+    marginLeft: '25%'
     },
 
     stats: {
-        fontWeight: 'bold',
-        textDecorationLine: 'underline',
-        fontSize: 18,
+    fontWeight: 'bold',
+    textDecorationLine: 'underline',
+    fontSize: 18,
     },
 
     statSection: {
-        flexDirection: 'row',
-        gap: 120,
-        paddingBottom: 10,
+    flexDirection: 'row',
+    gap: 120,
+    paddingBottom: 10,
     },
 
     dragonText: {
