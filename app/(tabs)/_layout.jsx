@@ -1,7 +1,13 @@
 import { Tabs } from "expo-router";
-import { Image, Text } from "react-native";
+import { Image, Text, TouchableOpacity } from "react-native";
+import * as Haptics from 'expo-haptics';
 
 const TabsLayout = () => {
+    //Function to trigger haptic feedback when pressed
+    const triggerHapticFeedback = () => {
+      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    };
+  
     return (
         <Tabs
         screenOptions={{
@@ -41,7 +47,17 @@ const TabsLayout = () => {
                             marginBottom: 20,
                         }}
                     />
-                )
+                ),
+
+                tabBarButton: (props) => (
+                  <TouchableOpacity
+                    {...props}
+                    onPress={() => {
+                      triggerHapticFeedback();
+                      props.onPress();
+                    }}
+                  />
+                ),
             }}/>
 
             <Tabs.Screen name="shop"
@@ -73,7 +89,17 @@ const TabsLayout = () => {
                             marginBottom: 20,
                         }}
                     />
-                )
+                ),
+
+                tabBarButton: (props) => (
+                  <TouchableOpacity
+                    {...props}
+                    onPress={() => {
+                      triggerHapticFeedback();
+                      props.onPress(); // Call the default onPress behavior
+                    }}
+                  />
+                ),
             }}/>
 
              <Tabs.Screen name="inventory"
@@ -104,7 +130,17 @@ const TabsLayout = () => {
                             marginBottom: 20,
                         }}
                     />
-                )
+                ),
+
+                tabBarButton: (props) => (
+                  <TouchableOpacity
+                    {...props}
+                    onPress={() => {
+                      triggerHapticFeedback();
+                      props.onPress(); // Call the default onPress behavior
+                    }}
+                  />
+                ),
             }}/>
         </Tabs>
     );
