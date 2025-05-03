@@ -2,12 +2,12 @@ import { StyleSheet, Text, View, ImageBackground, Image, FlatList, Pressable } f
 
 //Holds the dragons in their cards
 const dragonCollection = [
-    { id: '1', image: require('../../assets/Dragons/Blue-Orange/adult.gif')},
+    { id: '1', image: require('../../assets/Dragons/Blue/adult.gif')},
     { id: '2', image: require('../../assets/Dragons/Gold/adult.gif')},
     { id: '3', image: require('../../assets/Dragons/Green/baby.gif')},
     { id: '4', image: require('../../assets/Dragons/Orange/baby.gif')},
     { id: '5', image: require('../../assets/Dragons/Red/adult.gif')},
-    { id: '6', image: require('../../assets/Dragons/White-Violet/baby.gif')}
+    { id: '6', image: require('../../assets/Dragons/White/baby.gif')}
 ];
 
 const drakeCollection = [
