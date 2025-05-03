@@ -1,4 +1,5 @@
 import { StyleSheet, Text, View, ImageBackground, Image, FlatList, Pressable } from "react-native"
+import * as Haptics from 'expo-haptics'; 
 
 //Holds the dragons in their cards
 const dragonCollection = [
@@ -21,15 +22,25 @@ const wyvernCollection = [
 ];
 
 const Inventory = () => {
+    //Function to trigger haptic feedback
+    const triggerHapticFeedback = () => {
+        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+    };
+
     //Renders the dragons to the screen
     const renderItem = ({ item }) => (
         //Make the cards pressable for later coin functionality
-        <Pressable onPress={() => console.log('Pressed', item.title)} style={({ pressed }) => [
-            styles.card,
-            //Changes the cards color and opacity when pressed
-            { backgroundColor: pressed ? 'white' : '#cad0d0',
-                opacity: pressed ? 1 : 0.8, 
-             }
+        <Pressable 
+            onPress={() => {
+                triggerHapticFeedback();
+                console.log('Pressed', item.title);
+            }} 
+                style={({ pressed }) => [
+                styles.card,
+                //Changes the cards color and opacity when pressed
+                { backgroundColor: pressed ? 'white' : '#cad0d0',
+                    opacity: pressed ? 1 : 0.8, 
+                }
           ]}>
             <View style={styles.card}>
             <Image source={item.image} style={styles.image} />

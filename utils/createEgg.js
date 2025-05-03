@@ -1,13 +1,12 @@
 import eggImages from './eggImages';
 
-
 //Function to create a new egg based on the hatched eggs so far
 export const createEgg = (hatchedEggs = []) => {
  //Ensure the red egg always comes first
  if (hatchedEggs.length === 0) {
    return {
      color: 'Red',
-     type: 'Creature',
+     type: 'Dragon',
      rarity: 1.0,
      clicksNeeded: 10,
      progress: 0,
@@ -16,12 +15,26 @@ export const createEgg = (hatchedEggs = []) => {
    };
  }
 
+ //Base pool with type and color as well as percentage of spawning
+ const eggPool = [
+  { color: 'Blue', type: 'Dragon', weight: 3 },
+  { color: 'Green', type: 'Dragon', weight: 3 },
+  { color: 'Gold', type: 'Dragon', weight: 3 },
+  { color: 'Orange', type: 'Dragon', weight: 3 },
+  { color: 'White', type: 'Dragon', weight: 3 },
 
- const availableColors = ['Blue', 'Green', 'Gold', 'Orange', 'White'];
+  { color: 'Black-Violet', type: 'Drake', weight: 2 },
+  { color: 'Green-Red', type: 'Drake', weight: 2 },
 
+  { color: 'Blue-Green', type: 'Wyvern', weight: 1 },
+  { color: 'Brown-Green', type: 'Wyvern', weight: 1 },
+];
+
+//Filter out already hatched
+const remaining = eggPool.filter(e => !hatchedEggs.includes(e.color));
 
  // If all colors are hatched, return a finished egg (you can customize this)
- if (hatchedEggs.length === 6) {
+ if (remaining.length === 0) {
    return {
      color: 'none',
      type: 'Finished',
@@ -33,29 +46,17 @@ export const createEgg = (hatchedEggs = []) => {
    };
  }
 
-
- // Select a random color from the remaining ones
- const remainingColors = availableColors.filter(c => !hatchedEggs.includes(c));
- const color = remainingColors[Math.floor(Math.random() * remainingColors.length)];
-
-
- const type = 'Creature';
- const rarity = 1.0;
- const clicksNeeded = 10;
- const progress = 0;
-
-
- const stage = 0;
- const img = eggImages[color][stage]; // Start with stage 0 image
-
-
- return {
-   color,
-   type,
-   rarity,
-   clicksNeeded,
-   progress,
-   boosts: null,
-   img,
- };
+   // Weighted selection logic
+   const weightedList = remaining.flatMap(egg => Array(egg.weight).fill(egg));
+   const chosen = weightedList[Math.floor(Math.random() * weightedList.length)];
+ 
+   return {
+     color: chosen.color,
+     type: chosen.type,
+     rarity: 1.0,
+     clicksNeeded: 10,
+     progress: 0,
+     boosts: null,
+     img: eggImages[chosen.color][0],
+   }; 
 };

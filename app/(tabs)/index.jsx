@@ -1,6 +1,7 @@
 import React, { useRef, useEffect } from 'react';
 import { StyleSheet, View, Pressable, Animated, Text, ImageBackground, Image, Button } from 'react-native';
 import useStore from '../../store/useStore';
+import * as Haptics from 'expo-haptics';
 
 const EggClicker = () => {
  //Used for scaling the egg higher when pressed
@@ -21,6 +22,8 @@ const EggClicker = () => {
 
  //Handles the animation of the clicking of the egg and the +1 appearance
  const handlePress = () => {
+  Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+
    //Controls the egg bounce effect as a sequence, makes tge egg first scale up by 1.2
    //then back down to 1 over 100ms
    Animated.sequence([
