@@ -1,62 +1,61 @@
-import eggImages from './eggImages';
+import creatureData from './creatureData';
+
 
 //Function to create a new egg based on the hatched eggs so far
 export const createEgg = (hatchedEggs = []) => {
- //Ensure the red egg always comes first
- if (hatchedEggs.length === 0) {
+  // console.log("createEgg()> Hatched Eggs : ", hatchedEggs.length);
+  if (hatchedEggs.length === 0) {
+  //Ensure the red egg always comes first
+  const defaultEgg = creatureData.Red.egg;
    return {
-     color: 'Red',
-     type: 'Dragon',
-     rarity: 1.0,
-     clicksNeeded: 10,
+     color: defaultEgg.color,
+     type: defaultEgg.type,
+     rarity: defaultEgg.rarity,
+     clicksNeeded: defaultEgg.clicksNeeded,
      progress: 0,
-     boosts: null,
-     img: eggImages['Red'][0],  //Start with the red egg at stage 0
+     boosts: defaultEgg.boosts,
+     img: defaultEgg.images[0],  //Start with the red egg at stage 0
    };
  }
-
- //Base pool with type and color as well as percentage of spawning
- const eggPool = [
-  { color: 'Blue', type: 'Dragon', weight: 3 },
-  { color: 'Green', type: 'Dragon', weight: 3 },
-  { color: 'Gold', type: 'Dragon', weight: 3 },
-  { color: 'Orange', type: 'Dragon', weight: 3 },
-  { color: 'White', type: 'Dragon', weight: 3 },
-
-  { color: 'Black-Violet', type: 'Drake', weight: 2 },
-  { color: 'Green-Red', type: 'Drake', weight: 2 },
-
-  { color: 'Blue-Green', type: 'Wyvern', weight: 1 },
-  { color: 'Brown-Green', type: 'Wyvern', weight: 1 },
-];
 
 //Filter out already hatched
-const remaining = eggPool.filter(e => !hatchedEggs.includes(e.color));
+  const availableEggs = Object.entries(creatureData)
+    .filter(([color, data]) => {
+      const notHatched = !hatchedEggs.includes(color);
+      const hasWeight = (data.egg.weight ?? 1) > 0;
+      return notHatched && hasWeight;
+    })
+    .flatMap(([color, data]) => {
+      const count = data.egg.weight ?? 1;
+      return Array.from({ length: count }, () => ({ color, data }));
+    });
+
+  // console.log("createEgg()> Available Eggs : ", availableEggs.map(e => e.color));
 
  // If all colors are hatched, return a finished egg (you can customize this)
- if (remaining.length === 0) {
-   return {
-     color: 'none',
-     type: 'Finished',
-     rarity: 0,
-     clicksNeeded: 0,
-     progress: 0,
-     boosts: null,
-     img: null,
-   };
- }
+  if (availableEggs.length === 0) {
+    return {
+      color: 'none',
+      type: 'Finished',
+      rarity: 0,
+      clicksNeeded: 0,
+      progress: 0,
+      boosts: null,
+      img: null,
+    };
+  }
 
-   // Weighted selection logic
-   const weightedList = remaining.flatMap(egg => Array(egg.weight).fill(egg));
-   const chosen = weightedList[Math.floor(Math.random() * weightedList.length)];
- 
-   return {
-     color: chosen.color,
-     type: chosen.type,
-     rarity: 1.0,
-     clicksNeeded: 10,
-     progress: 0,
-     boosts: null,
-     img: eggImages[chosen.color][0],
-   }; 
+  // Choose random egg from weighted options
+  const chosen = availableEggs[Math.floor(Math.random() * availableEggs.length)];
+  const { color, data } = chosen;
+
+  return {
+    color,
+    type: data.type,
+    rarity: data.egg.rarity,
+    clicksNeeded: data.egg.clicksNeeded,
+    progress: 0,
+    boosts: data.egg.boosts ?? 0,
+    img: data.egg.images[0],
+  };
 };
