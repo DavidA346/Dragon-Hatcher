@@ -8,6 +8,8 @@ import creatureData from '../utils/creatureData';
 const useStore = create((set, get) => ({
  //Start currency at 0
  currency: 0,
+ //start gold-balance at 0
+ gold: 0, 
  //Default egg creation
  egg: createEgg([]),
  //Track previously hatched eggs
@@ -86,6 +88,24 @@ const useStore = create((set, get) => ({
    });
  },
 
+ //Increment gold (only adult creatures) and persist it
+  incrementGold: async () => {
+    set(state => {
+      const newGold = state.gold + 1;
+      get().saveGold(newGold);
+      return { gold: newGold };
+    });
+  },
+
+  // persistence for gold
+  saveGold: async (n) => {
+    await AsyncStorage.setItem('gold', JSON.stringify(n));
+  },
+  loadGold: async () => {
+    const raw = await AsyncStorage.getItem('gold');
+    if (raw != null) set({ gold: JSON.parse(raw) });
+  },
+
  //Increment the egg progress and save it to AsyncStorage
  incrementEggProgress: async () => {
    const { egg, hatchedEggs } = get();
@@ -110,15 +130,13 @@ const useStore = create((set, get) => ({
      get().saveHatchedEggs(newHatched); //Save hatched eggs to AsyncStorage
 
     //  console.log("incrementEggProgress()> New Hatched: ", newHatched);
-
+     const base = creatureData[egg.color]; //adding this line to make it easier to read so creatureData[egg.color] only has to be called once
      const creature = {
       id: Date.now().toString(),
       name: egg.color,
-      type: creatureData[egg.color].type,
-      // rarity: 'Common', // or generate based on rules
-      image: (creatureData[egg.color].babyImage!==null)
-        ? creatureData[egg.color].babyImage
-        : creatureData[egg.color].adultImage
+      type: base.type,
+      image: (base.babyImage !== null ? base.babyImage : base.adultImage),
+      stage: (base.babyImage !== null ? 'baby' : 'adult'),
      };
      get().addCreatureToInventory(creature);
 
@@ -144,11 +162,13 @@ const useStore = create((set, get) => ({
    const firstEgg = createEgg([]);
    set({
      currency: 0,
+     gold: 0,
      egg: firstEgg,
      hatchedEggs: [],
      creatureInventory: []
    });
    get().saveCurrency(0);
+   get().saveGold(0);
    get().saveHatchedEggs([]);
    get().saveCurrentEgg(firstEgg); //Reset the egg to the first state
    get().saveInventory([])
@@ -157,6 +177,7 @@ const useStore = create((set, get) => ({
  //Load all saved values when the app starts
  initializeStore: async () => {
    await get().loadCurrency();
+   await get().loadGold();      // new gold balance
    await get().loadHatchedEggs();
    await get().loadCurrentEgg();
    await get().loadInventory();

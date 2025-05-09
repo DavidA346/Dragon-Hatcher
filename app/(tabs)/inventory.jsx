@@ -4,7 +4,10 @@ import * as Haptics from 'expo-haptics';
 
 
 const Inventory = () => {
-    const creatureInventory = useStore((state) => state.creatureInventory);
+    const creatureInventory = useStore(state => state.creatureInventory);
+    // gold balance & click‐to‐earn
+    const gold = useStore(state => state.gold);
+    const incrementGold = useStore(state => state.incrementGold);
 
     const dragonCollection = creatureInventory.filter(
         (creature) => creature.type === 'Dragon'
@@ -26,11 +29,14 @@ const Inventory = () => {
     //Renders the dragons to the screen
     const renderItem = ({ item }) => (
         //Make the cards pressable for later coin functionality
-        <Pressable 
+        <Pressable
             onPress={() => {
                 triggerHapticFeedback();
-                console.log('Pressed', item.title);
-            }} 
+                //only adults can increment gold
+                if(item.stage === 'adult') {
+                    incrementGold();
+                }
+            }}
                 style={({ pressed }) => [
                 styles.card,
                 //Changes the cards color and opacity when pressed
@@ -50,6 +56,10 @@ const Inventory = () => {
             source={require('../../assets/backgrounds/collection_background.png')}
             style={styles.backgroundImage}
         >
+            {/* Gold Badge */}
+            <View style={styles.goldContainer}>
+                <Text style={styles.goldText}>Gold: {gold}</Text>
+            </View>
             <View style={styles.container}>
                 <View>
                     {/* Displays the BROOD image to the screen */}
@@ -183,4 +193,22 @@ const styles = StyleSheet.create({
         fontSize: 18,
         fontWeight: 'bold',
     },
-})
+
+    goldContainer: {
+        position: 'absolute',
+        top: 50,
+        right: 15,
+        backgroundColor: 'rgba(0,0,0,0.5)',
+        paddingHorizontal: 8,
+        paddingVertical: 4,
+        borderRadius: 6,
+        zIndex: 10,
+    },
+
+    goldText: {
+        fontSize: 16, 
+        fontWeight: 'bold',
+        color: '#FFD700'
+    },
+
+});
