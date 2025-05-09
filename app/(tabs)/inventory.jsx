@@ -1,33 +1,24 @@
 import { StyleSheet, Text, View, ImageBackground, Image, FlatList, Pressable } from "react-native"
 import * as Haptics from 'expo-haptics'; 
-import useStore from '../../store/useStore';
-
-
 
 //Holds the dragons in their cards
 const dragonCollection = [
-    // { id: '1', image: require('../../assets/Dragons/Blue/adult.gif')},
-    // { id: '2', image: require('../../assets/Dragons/Gold/adult.gif')},
-    // { id: '3', image: require('../../assets/Dragons/Green/baby.gif')},
-    // { id: '4', image: require('../../assets/Dragons/Orange/baby.gif')},
-    // { id: '5', image: require('../../assets/Dragons/Red/adult.gif')},
-    // { id: '6', image: require('../../assets/Dragons/White/baby.gif')}
-    { id: '1', image: require('../../assets/Dragons/Blue/adult.gif'),  stage: 'adult' },
-    { id: '2', image: require('../../assets/Dragons/Gold/adult.gif'),  stage: 'adult' },
-    { id: '3', image: require('../../assets/Dragons/Green/baby.gif'),  stage: 'baby'  },
-    { id: '4', image: require('../../assets/Dragons/Orange/baby.gif'), stage: 'baby'  },
-    { id: '5', image: require('../../assets/Dragons/Red/adult.gif'),   stage: 'adult' },
-    { id: '6', image: require('../../assets/Dragons/White/baby.gif'), stage: 'baby'  }
+    { id: '1', image: require('../../assets/Dragons/Blue/adult.gif')},
+    { id: '2', image: require('../../assets/Dragons/Gold/adult.gif')},
+    { id: '3', image: require('../../assets/Dragons/Green/baby.gif')},
+    { id: '4', image: require('../../assets/Dragons/Orange/baby.gif')},
+    { id: '5', image: require('../../assets/Dragons/Red/adult.gif')},
+    { id: '6', image: require('../../assets/Dragons/White/baby.gif')}
 ];
 
 const drakeCollection = [
-    { id: '7', image: require('../../assets/Drakes/Black-Violet/baby.gif'), stage: 'baby'  },
-    { id: '8', image: require('../../assets/Drakes/Green-Red/adult.gif'), stage: 'adult' }
+    { id: '7', image: require('../../assets/Drakes/Black-Violet/baby.gif')},
+    { id: '8', image: require('../../assets/Drakes/Green-Red/adult.gif')}
 ];
 
 const wyvernCollection = [
-    { id: '9', image: require('../../assets/Wyverns/Blue-Green/baby.gif'), stage: 'baby'  },
-    { id: '10', image: require('../../assets/Wyverns/Brown-Green/adult.gif'), stage: 'adult' },
+    { id: '9', image: require('../../assets/Wyverns/Blue-Green/baby.gif')},
+    { id: '10', image: require('../../assets/Wyverns/Brown-Green/adult.gif')}
 ];
 
 const Inventory = () => {
@@ -36,25 +27,14 @@ const Inventory = () => {
         Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
     };
 
-    // grab your currency-incrementer from zustand
-    const { incrementCurrency, currency } = useStore();
-
     //Renders the dragons to the screen
     const renderItem = ({ item }) => (
         //Make the cards pressable for later coin functionality
-        // <Pressable 
-        //     onPress={() => {
-        //         triggerHapticFeedback();
-        //         console.log('Pressed', item.title);
-        //     }} 
-        <Pressable
+        <Pressable 
             onPress={() => {
-               triggerHapticFeedback();
-             // only adults give gold
-   if (item.stage === 'adult') {
-                    incrementCurrency();
-}
-}}
+                triggerHapticFeedback();
+                console.log('Pressed', item.title);
+            }} 
                 style={({ pressed }) => [
                 styles.card,
                 //Changes the cards color and opacity when pressed
@@ -74,10 +54,6 @@ const Inventory = () => {
             source={require('../../assets/backgrounds/collection_background.png')}
             style={styles.backgroundImage}
         >
-            {/* Gold badge */}
-            <View style={styles.currencyContainer}>
-                <Text style={styles.currencyText}>Gold: {currency}</Text>
-            </View>
             <View style={styles.container}>
                 <View>
                     {/* Displays the BROOD image to the screen */}
@@ -222,22 +198,4 @@ const styles = StyleSheet.create({
         fontSize: 18,
         fontWeight: 'bold',
     },
-
-    currencyContainer: {
-    position: 'absolute',
-    top: 50,
-    right: 10,
-    backgroundColor: 'rgba(0,0,0,0.5)',
-    paddingHorizontal: 10,
-    paddingVertical: 4,
-    borderRadius: 8,
-    zIndex: 10,
-  },
-
-  currencyText: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    color: '#FFD700',
-  },
-
 })
