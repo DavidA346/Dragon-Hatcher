@@ -12,7 +12,7 @@ const EggClicker = () => {
  const plusOneY = useRef(new Animated.Value(0)).current;
 
  //Uses useStore to loads the saved data using AsyncStorage
- const { currency, incrementCurrency, egg, incrementEggProgress, initializeStore } = useStore();
+ const { currency, egg, incrementEggProgress, initializeStore } = useStore();
 
  //Loads the user's data before rendering components
  useEffect(() => {
@@ -40,7 +40,7 @@ const EggClicker = () => {
    ]).start();
 
    //Increment the currency and persist it
-   incrementCurrency();
+   //incrementCurrency();
    //Update the egg's progress
    incrementEggProgress();
 
