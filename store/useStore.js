@@ -1,7 +1,8 @@
 import { create } from 'zustand';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { createEgg } from '../utils/createEgg';
-import eggImages from '../utils/eggImages';
+import creatureData from '../utils/creatureData';
+
 
 //Used to modify and store the state of a value
 const useStore = create((set, get) => ({
@@ -11,6 +12,28 @@ const useStore = create((set, get) => ({
  egg: createEgg([]),
  //Track previously hatched eggs
  hatchedEggs: [],
+
+ // Creature Inventory Creation, Loading/Saving, and Adding
+ creatureInventory: [],
+  // Load inventory
+  loadInventory: async () => {
+    const savedInventory = await AsyncStorage.getItem('creatureInventory');
+    if (savedInventory !== null) {
+      set({ creatureInventory: JSON.parse(savedInventory) });
+    }
+  },
+  // Save inventory
+  saveInventory: async (inventory) => {
+    await AsyncStorage.setItem('creatureInventory', JSON.stringify(inventory));
+  },
+  addCreatureToInventory: async (creature) => {
+    set((state) => {
+      const updated = [...state.creatureInventory, creature];
+      get().saveInventory(updated);
+      return { creatureInventory: updated };
+    });
+  },
+
 
  //Loads the score from AsyncStorage when the app starts
  loadCurrency: async () => {
@@ -78,14 +101,31 @@ const useStore = create((set, get) => ({
    const updatedEgg = {
      ...egg,
      progress: newProgress,
-     img: eggImages[egg.color][newStage],
+     img: creatureData[egg.color].egg.images[newStage],
    };
 
    //If egg is done hatching
    if (newProgress >= egg.clicksNeeded) {
      const newHatched = [...hatchedEggs, egg.color];
      get().saveHatchedEggs(newHatched); //Save hatched eggs to AsyncStorage
+
+    //  console.log("incrementEggProgress()> New Hatched: ", newHatched);
+
+     const creature = {
+      id: Date.now().toString(),
+      name: egg.color,
+      type: creatureData[egg.color].type,
+      // rarity: 'Common', // or generate based on rules
+      image: (creatureData[egg.color].babyImage!==null)
+        ? creatureData[egg.color].babyImage
+        : creatureData[egg.color].adultImage
+     };
+     get().addCreatureToInventory(creature);
+
      const newEgg = createEgg(newHatched); //Create new egg based on hatched eggs
+     
+    //  console.log("incrementEggProgress()> New Egg: ", newEgg);
+
      get().saveCurrentEgg(newEgg); //Save new egg state
      // Update store state
      set({
@@ -93,7 +133,6 @@ const useStore = create((set, get) => ({
        egg: newEgg,
      });
    }
-
    else {
      get().saveCurrentEgg(updatedEgg); // Save current egg progress
      set({ egg: updatedEgg });
@@ -107,10 +146,12 @@ const useStore = create((set, get) => ({
      currency: 0,
      egg: firstEgg,
      hatchedEggs: [],
+     creatureInventory: []
    });
    get().saveCurrency(0);
    get().saveHatchedEggs([]);
    get().saveCurrentEgg(firstEgg); //Reset the egg to the first state
+   get().saveInventory([])
  },
 
  //Load all saved values when the app starts
@@ -118,6 +159,7 @@ const useStore = create((set, get) => ({
    await get().loadCurrency();
    await get().loadHatchedEggs();
    await get().loadCurrentEgg();
+   await get().loadInventory();
  },
 }));
 
