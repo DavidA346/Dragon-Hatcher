@@ -2,6 +2,7 @@ import { create } from 'zustand';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { createEgg } from '../utils/createEgg';
 import creatureData from '../utils/creatureData';
+import itemData from '../utils/itemData';
 
 
 //Used to modify and store the state of a value
@@ -14,6 +15,52 @@ const useStore = create((set, get) => ({
  egg: createEgg([]),
  //Track previously hatched eggs
  hatchedEggs: [],
+
+ items: {
+  hammers: [],
+  totems: []
+ },
+ getEquippedHammer: () => {
+  const hammers = get().items.hammers;
+  if (!hammers || hammers.length === 0) return null;
+  return hammers[hammers.length - 1]; // assume last one is active
+ },
+ loadItems: async () => {
+  const savedItems = await AsyncStorage.getItem('items');
+  if (savedItems !== null) {
+    set({items: JSON.parse(savedItems)});
+  } 
+ },
+ savedItems: async(items) => {
+  await AsyncStorage.setItem('items', JSON.stringify(items));
+ },
+ purchaseItem: async (category, id) => {
+  // Prevent buying already bought item
+  if (state.items[category].includes(id)) return;
+
+  const item = itemData[category][id];
+  const state = get();
+  
+  if (!item || state.currency < item.cost) return;
+
+  // Deduct currency and add item to inventory
+  const updatedCurrency = state.currency - item.cost;
+  const updatedItems = {
+    ...state.items,
+    [category]: [...state.items[category], id],
+  };
+
+  set({ currency: updatedCurrency, items: updatedItems });
+  await AsyncStorage.setItem('items', JSON.stringify(updatedItems));
+  await AsyncStorage.setItem('currency', updatedCurrency.toString());
+ },
+ getTotalBonusClicks: () => {
+  const items = get().items.hammers;
+  return items.reduce((total, id) =>{
+    const item = itemData.hammers[id];
+    return total + (item ?.bonusClicks || 0);
+  }, 0)
+ },
 
  // Creature Inventory Creation, Loading/Saving, and Adding
  creatureInventory: [],
@@ -91,7 +138,9 @@ const useStore = create((set, get) => ({
  //Increment gold (only adult creatures) and persist it
   incrementGold: async () => {
     set(state => {
-      const newGold = state.gold + 1;
+      //const goldBonus = get().getGoldMultiplier();
+
+      const newGold = state.gold + 1 /*goldBonus*/;
       get().saveGold(newGold);
       return { gold: newGold };
     });
@@ -109,7 +158,10 @@ const useStore = create((set, get) => ({
  //Increment the egg progress and save it to AsyncStorage
  incrementEggProgress: async () => {
    const { egg, hatchedEggs } = get();
-   const newProgress = egg.progress + 1; //Persist the new score
+
+   const bonus = get().getTotalBonusClicks();
+
+   const newProgress = egg.progress + 1 + bonus; //Persist the new score
    const percent = newProgress / egg.clicksNeeded;
 
   //Determine egg stage based on progress percentage
@@ -181,6 +233,7 @@ const useStore = create((set, get) => ({
    await get().loadHatchedEggs();
    await get().loadCurrentEgg();
    await get().loadInventory();
+   await get().loadItems();
  },
 }));
 

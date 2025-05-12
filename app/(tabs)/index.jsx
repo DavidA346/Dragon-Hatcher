@@ -1,9 +1,12 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 import { StyleSheet, View, Pressable, Animated, Text, ImageBackground, Image, Button } from 'react-native';
 import useStore from '../../store/useStore';
+import itemData from '../../utils/itemData';
 import * as Haptics from 'expo-haptics';
 
 const EggClicker = () => {
+ const [clickBonus, setClickBonus] = useState(1);
+
  //Used for scaling the egg higher when pressed
  const scaleAnim = useRef(new Animated.Value(1)).current;
  //Controls opacity of the +1, starts at 0 as it is hidden until pressed
@@ -20,9 +23,17 @@ const EggClicker = () => {
    initializeStore();
  }, []);
 
+ const { getEquippedHammer } = useStore.getState();
+ const hammerId = getEquippedHammer();
+ const hammerIcon = hammerId ? itemData.hammers[hammerId].image : null;
+
  //Handles the animation of the clicking of the egg and the +1 appearance
  const handlePress = () => {
   Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+
+  const bonus = useStore.getState().getTotalBonusClicks?.() || 0;
+  const total = 1 + bonus;
+  setClickBonus(total); // update visible +X number
 
    //Controls the egg bounce effect as a sequence, makes tge egg first scale up by 1.2
    //then back down to 1 over 100ms
@@ -40,7 +51,7 @@ const EggClicker = () => {
    ]).start();
 
    //Increment the currency and persist it
-   incrementCurrency();
+   //incrementCurrency();
    //Update the egg's progress
    incrementEggProgress();
 
@@ -123,8 +134,9 @@ const EggClicker = () => {
              },
            ]}
          >
-           +1
-         </Animated.Text>
+           +{clickBonus}
+         </Animated.Text> 
+         {hammerIcon && (<Image source={hammerIcon} style={styles.hammerIcon} />)}
        </View>
      </View>
    </ImageBackground>
@@ -151,6 +163,12 @@ const styles = StyleSheet.create({
    fontSize: 50,
    color: 'black',
    fontWeight: 'bold',
+ },
+
+ hammerIcon: {
+   width: 32,
+   height: 32,
+   resizeMode: 'contain',
  },
 
  currency: {
