@@ -12,7 +12,7 @@ const EggClicker = () => {
  const plusOneY = useRef(new Animated.Value(0)).current;
 
  //Uses useStore to loads the saved data using AsyncStorage
- const { currency, incrementCurrency, egg, incrementEggProgress, initializeStore } = useStore();
+ const { currency, incrementCurrency, egg, incrementEggProgress, initializeStore, resetProgress } = useStore();
 
  //Loads the user's data before rendering components
  useEffect(() => {
@@ -83,9 +83,10 @@ const EggClicker = () => {
 
        {/* Pressable calls handlePress when the image is pressed */}
        <View style={styles.eggWrapper}>
-         <Pressable onPress={handlePress}>
+         <Pressable testID="egg-button" onPress={handlePress}>
            {/* Animated Image allows for scaling animations */}
            <Animated.Image
+             testID="egg-image"
              source={egg.img}
              style={[styles.egg, { transform: [{ scale: scaleAnim }] }]}
            />
@@ -97,7 +98,7 @@ const EggClicker = () => {
          )}
 
           {/* Display stored progress bar from Zustand */}
-          {egg && egg.clicksNeeded > 0 && (
+          {egg?.clicksNeeded > 0 && (
            <View style={styles.progressBarContainer}>
              <View
                style={[
@@ -111,7 +112,7 @@ const EggClicker = () => {
            </View>
          )}
 
-         <Button title="Reset Progress" onPress={() => useStore.getState().resetProgress()} />
+       <Button testID="reset-button" title="Reset Progress" onPress={resetProgress} />
 
          {/* Handles +1 animation */}
          <Animated.Text
