@@ -135,9 +135,10 @@ const styles = StyleSheet.create({
     card: {
         borderRadius: 20,
         margin: 8,
-        width: '30%',
+        width: 120,
         alignItems: 'center',
         justifyContent: 'center',
+        paddingRight: 10
       },
 
     dragonsGrid: {
