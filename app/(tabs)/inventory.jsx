@@ -34,7 +34,7 @@ const Inventory = () => {
                 triggerHapticFeedback();
                 //only adults can increment gold
                 if(item.stage === 'adult') {
-                    incrementGold();
+                    incrementGold(item);
                 }
             }}
                 style={({ pressed }) => [

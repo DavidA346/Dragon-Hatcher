@@ -27,12 +27,19 @@ const EggClicker = () => {
  const hammerId = getEquippedHammer();
  const hammerIcon = hammerId ? itemData.hammers[hammerId].image : null;
 
+ const totemId = egg.type?.toLowerCase(); // 'dragon', 'drake', etc.
+ const totemImage = itemData.totems[totemId]?.image;
+ const ownsTotem = useStore.getState().items.totems?.includes(totemId);
+
+
  //Handles the animation of the clicking of the egg and the +1 appearance
  const handlePress = () => {
   Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
 
-  const bonus = useStore.getState().getTotalBonusClicks?.() || 0;
-  const total = 1 + bonus;
+  const hammerClickBonus = useStore.getState().getHammerBonusClicks?.() || 0;
+  const totemEffects = useStore.getState().getTotemEffects?.(egg) || {};
+  const totemClickBonus = totemEffects.clickBonus || 0;
+  const total = 1 + hammerClickBonus + totemClickBonus;
   setClickBonus(total); // update visible +X number
 
    //Controls the egg bounce effect as a sequence, makes tge egg first scale up by 1.2
@@ -137,6 +144,9 @@ const EggClicker = () => {
            +{clickBonus}
          </Animated.Text> 
          {hammerIcon && (<Image source={hammerIcon} style={styles.hammerIcon} />)}
+         {totemImage && ownsTotem && (
+          <Image source={totemImage} style={[styles.hammerIcon, { marginLeft: 10 }]} />
+          )}
        </View>
      </View>
    </ImageBackground>

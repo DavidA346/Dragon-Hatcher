@@ -29,7 +29,7 @@ const creatureData = {
       clicksNeeded: 60,
       // progress: 0,
       // boosts: 0,
-      weight: 3
+      weight: 2
     },
     babyImage: require('../assets/Dragons/Blue/baby.gif'),
     adultImage: require('../assets/Dragons/Blue/adult.gif')
@@ -46,7 +46,7 @@ const creatureData = {
       clicksNeeded: 60,
       // progress: 0,
       // boosts: 0,
-      weight: 3
+      weight: 2
     },
     babyImage: require('../assets/Dragons/Green/baby.gif'),
     adultImage: require('../assets/Dragons/Green/adult.gif')
@@ -80,7 +80,7 @@ const creatureData = {
       clicksNeeded: 60,
       // progress: 0,
       // boosts: 0,
-      weight: 3
+      weight: 2
     },
     babyImage: require('../assets/Dragons/Orange/baby.gif'),
     adultImage: require('../assets/Dragons/Orange/adult.gif')
@@ -142,7 +142,7 @@ const creatureData = {
       ],
       rarity: 1.0,
       clicksNeeded: 10,
-      weight: 1
+      weight: 3
     },
     babyImage: require('../assets/Wyverns/Blue-Green/baby.gif'),
     adultImage: require('../assets/Wyverns/Blue-Green/adult.gif')
@@ -157,7 +157,7 @@ const creatureData = {
       ],
       rarity: 1.0,
       clicksNeeded: 10,
-      weight: 3
+      weight: 5
     },
     babyImage: require('../assets/Wyverns/Brown-Green/baby.gif'),
     adultImage: require('../assets/Wyverns/Brown-Green/adult.gif')
