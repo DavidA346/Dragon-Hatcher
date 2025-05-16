@@ -104,8 +104,9 @@ const Inventory = () => {
             item={item}
             onPress={() => {
                 triggerHapticFeedback();
-                if (item.stage === 'adult') {
-                    incrementGold();
+                //only adults can increment gold
+                if(item.stage === 'adult') {
+                    incrementGold(item);
                 }
             }}
         />
@@ -196,9 +197,10 @@ const styles = StyleSheet.create({
     card: {
         borderRadius: 20,
         margin: 8,
-        width: '30%',
+        width: 120,
         alignItems: 'center',
         justifyContent: 'center',
+        paddingRight: 10
       },
 
     dragonsGrid: {
