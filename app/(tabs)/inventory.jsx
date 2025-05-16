@@ -118,10 +118,6 @@ const Inventory = () => {
             source={require('../../assets/backgrounds/collection_background.png')}
             style={styles.backgroundImage}
         >
-            {/* Gold Badge */}
-            <View style={styles.goldContainer}>
-                <Text style={styles.goldText}>Gold: {gold}</Text>
-            </View>
             <View style={styles.container}>
                 <View>
                     {/* Displays the BROOD image to the screen */}
@@ -140,6 +136,16 @@ const Inventory = () => {
                         <Text style={styles.drakesText}>Drakes: {drakeCollection.length}/2</Text>
                         <Text style={styles.wyvernsText}>Wyverns: {wyvernCollection.length}/2</Text>
                     </View>
+                </View>
+
+                {/* Gold Badge */}
+                <View style={styles.goldContainer}>
+                    <Text style={styles.goldText}>{gold}</Text>
+
+                    <Image
+                        style={styles.gold_coin}
+                        source={require("../../assets/item sprites/coin/coin_sprite.png")}
+                    />
                 </View>
 
                  {/* Displays the dragon card lists to the screen */}
@@ -258,26 +264,29 @@ const styles = StyleSheet.create({
     },
 
     goldContainer: {
-        position: 'absolute',
-        top: 50,
-        right: 15,
-        backgroundColor: 'rgba(0,0,0,0.5)',
-        paddingHorizontal: 8,
-        paddingVertical: 4,
-        borderRadius: 6,
-        zIndex: 10,
+        flexDirection: 'row',
+        alignItems: 'center',
+        height: '3%',
+        marginLeft: '46%',
+        marginRight: '42%',
     },
 
     goldText: {
-        fontSize: 16, 
+        fontSize: 27, 
         fontWeight: 'bold',
-        color: '#FFD700'
+        color: 'black',
+    },
+
+    gold_coin: {
+        width: '100%',
+        height: '100%',
+        resizeMode: 'contain',
     },
 
     plusOneContainer: {
         position: 'absolute',
         top: '35%',
-        right: '2%',
+        left: '20%',
         flexDirection: 'row',
         alignItems: 'center',
     },    
@@ -286,7 +295,6 @@ const styles = StyleSheet.create({
         fontSize: 40,
         fontWeight: 'bold',
         color: 'black',
-        marginRight: 4,
     },
     
     coin: {
@@ -294,5 +302,4 @@ const styles = StyleSheet.create({
         height: '60%',
         resizeMode: 'contain',
     },
-    
 });
