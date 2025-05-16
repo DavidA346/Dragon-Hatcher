@@ -1,7 +1,7 @@
 import { StyleSheet, Text, View, ImageBackground, Image, FlatList, Pressable, Animated } from "react-native"
 import useStore from "../../store/useStore";
 import * as Haptics from 'expo-haptics'; 
-import React, { useRef } from "react";
+import React, { useRef, useEffect } from "react";
 
 //To allow for +1 on each dragon
 const CreatureCard = ({ item, onPress }) => {
@@ -31,6 +31,14 @@ const CreatureCard = ({ item, onPress }) => {
              }),
         ]).start();
     };
+
+    useEffect(() => {
+        const interval = setInterval(() => {
+          useStore.getState().growBabiesToAdults();
+        }, 5000); // every 5 seconds
+      
+        return () => clearInterval(interval);
+      }, []);      
 
     //Triggers the press if it is an adult
     const handlePress = () => {
