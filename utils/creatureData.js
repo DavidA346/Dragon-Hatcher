@@ -31,6 +31,7 @@ const creatureData = {
       // boosts: 0,
       weight: 2
     },
+    growthTimeMs: 300000, //5mins
     babyImage: require('../assets/Dragons/Blue/baby.gif'),
     adultImage: require('../assets/Dragons/Blue/adult.gif')
   },
@@ -48,6 +49,7 @@ const creatureData = {
       // boosts: 0,
       weight: 2
     },
+    growthTimeMs: 300000, //5mins
     babyImage: require('../assets/Dragons/Green/baby.gif'),
     adultImage: require('../assets/Dragons/Green/adult.gif')
   },
@@ -82,6 +84,7 @@ const creatureData = {
       // boosts: 0,
       weight: 2
     },
+    growthTimeMs: 300000, //5mins
     babyImage: require('../assets/Dragons/Orange/baby.gif'),
     adultImage: require('../assets/Dragons/Orange/adult.gif')
   },
@@ -99,6 +102,7 @@ const creatureData = {
       // boosts: 0,
       weight: 1
     },
+    growthTimeMs: 300000, //5mins
     babyImage: require('../assets/Dragons/White/baby.gif'),
     adultImage: require('../assets/Dragons/White/adult.gif')
   },
@@ -114,6 +118,7 @@ const creatureData = {
       clicksNeeded: 30,
       weight: 1
     },
+    growthTimeMs: 240000, //4mins
     babyImage: require('../assets/Drakes/Black-Violet/baby.gif'),
     adultImage: require('../assets/Drakes/Black-Violet/adult.gif')
   },
@@ -129,6 +134,7 @@ const creatureData = {
       clicksNeeded: 30,
       weight: 3
     },
+    growthTimeMs: 240000, //4mins
     babyImage: require('../assets/Drakes/Green-Red/baby.gif'),
     adultImage: require('../assets/Drakes/Green-Red/adult.gif')
   },
@@ -144,6 +150,7 @@ const creatureData = {
       clicksNeeded: 10,
       weight: 3
     },
+    growthTimeMs: 120000, //2mins
     babyImage: require('../assets/Wyverns/Blue-Green/baby.gif'),
     adultImage: require('../assets/Wyverns/Blue-Green/adult.gif')
   },
@@ -159,6 +166,7 @@ const creatureData = {
       clicksNeeded: 10,
       weight: 5
     },
+    growthTimeMs: 120000, //2mins
     babyImage: require('../assets/Wyverns/Brown-Green/baby.gif'),
     adultImage: require('../assets/Wyverns/Brown-Green/adult.gif')
   },
