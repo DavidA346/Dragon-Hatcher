@@ -32,7 +32,9 @@ const itemData = {
               name: "Brywyn’s Scroll I",
               description: 'Describes Dragons. Increases gold earned from Adult-dragons (+{4} gold on click).',
               cost: 2100,
-              bonusAdultGold: 4,
+              effects: {
+                bonusAdultGold: 4
+              }
           },
           {
               id: 'dragon2',
@@ -40,7 +42,9 @@ const itemData = {
               name: "Brywyn’s Scroll II",
               description: 'Describes Dragons more. Multiplies gold earned by the number of dragon species collected (x6 MAX).',
               cost: 4100,
-              goldMultiplier: 1
+              effects: {
+                goldMultiplier: 1
+              }
           }
       ],
       drake: [
@@ -50,7 +54,9 @@ const itemData = {
               name: "Anpero’s Scroll I",
               description: 'Describes Drakes. Increases gold earned from Adult-drakes (+{4} gold on click).',
               cost: 1300,
-              bonusAdultGold: 4
+              effects: {
+                bonusAdultGold: 4
+              }
           },
           {
               id: 'drake2',
@@ -58,7 +64,9 @@ const itemData = {
               name: "Anpero’s Scroll II",
               description: 'Describes Drakes more. Multiplies gold earned by the number of Drake species collected (x2 MAX).',
               cost: 2600,
-              goldMultiplier: 1
+              effects: {
+                goldMultiplier: 1
+              }
           }
       ],
       wyvern: [
@@ -68,7 +76,9 @@ const itemData = {
               name: "Arostiv’s Scroll I",
               description: 'Describes Wyverns. Increases gold earned from Adult-wyverns (+{4} gold on click).',
               cost: 800,
-              bonusAdultGold: 4
+              effects: {
+                bonusAdultGold: 4
+              }
           },
           {
               id: 'wyvern2',
@@ -76,7 +86,9 @@ const itemData = {
               name: "Arostiv’s Scroll II",
               description: 'Describes Wyverns more. Multiplies gold earned by the number of Wyvern species collected (x2 MAX).',
               cost: 1600,
-              goldMultiplier: 1
+              effects: {
+                goldMultiplier: 1
+              }
           }
       ],
       gold: [
@@ -86,7 +98,9 @@ const itemData = {
               name: "Danask’s Scroll I",
               description: 'Describes gold. +1 gold for every click.',
               cost: 800,
-              bonusGold: 1
+              effects: {
+                goldBonus: 1
+              }
           },
           {
               id: 'gold2',
@@ -94,7 +108,9 @@ const itemData = {
               name: "Danask’s Scroll II",
               description: 'Describes gold more. +4 gold for every click.',
               cost: 1600,
-              bonusGold: 4
+              effects: {
+                goldBonus: 4
+              }
           },
           {
               id: 'gold3',
@@ -102,7 +118,9 @@ const itemData = {
               name: "Danask’s Scroll III",
               description: 'Describes gold even more. x2 gold from all sources.',
               cost: 3200,
-              goldMultiplier: 2
+              effects: {
+                goldMultiplier: 2
+              }
           }
       ],
       egg: [
@@ -112,7 +130,9 @@ const itemData = {
               name: "Jothur’s Scroll I",
               description: 'Describes Eggs. Faster Hatching rate (⅔ clicks needed).',
               cost: 500,
-              clickReducer: 2/3
+              effects: {
+                clickReducer: 2/3
+              }
           },
           {
               id: 'egg2',
@@ -120,7 +140,9 @@ const itemData = {
               name: "Jothur’s Scroll II",
               description: 'Describes Eggs more. Faster Hatching rate (½ clicks needed).',
               cost: 1500,
-              clickReducer: 1/3
+              effects: {
+                clickReducer: 1/2
+              }
           }
       ]
     },
