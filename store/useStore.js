@@ -133,8 +133,14 @@ applyScrollEffects: (type, id) => {
 },
 
 applyAdultGoldBonus: (value) => {
-
+  const dragonEffects = getScrollEffects('dragon', get().items.scrolls.dragon);
+  const goldFromAdultDragon = baseGold + (dragonEffects.bonusAdultGold || 0);
+  const drakeEffects = getScrollEffects('drake', get().items.scrolls.drake);
+  const goldFromAdultDrake = baseGold + (drakeEffects.bonusAdultGold || 0);
+  const wyvernEffects = getScrollEffects('wyvern', get().items.scrolls.wyvern);
+  const goldFromAdultWyvern = baseGold + (dragonEffects.bonusAdultGold || 0);
 },
+
 applyGoldMultiplier: (value) => {
 
 },
