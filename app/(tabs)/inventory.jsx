@@ -1,7 +1,79 @@
-import { StyleSheet, Text, View, ImageBackground, Image, FlatList, Pressable } from "react-native"
+import { StyleSheet, Text, View, ImageBackground, Image, FlatList, Pressable, Animated } from "react-native"
 import useStore from "../../store/useStore";
 import * as Haptics from 'expo-haptics'; 
+import React, { useRef } from "react";
 
+//To allow for +1 on each dragon
+const CreatureCard = ({ item, onPress }) => {
+    //Controls opacity of the +1, starts at 0 as it is hidden until pressed
+    const plusOneOpacity = useRef(new Animated.Value(0)).current;
+    //Controls the y position of the +1 and moves upward when pressed, also starts as 0
+    const plusOneY = useRef(new Animated.Value(0)).current;
+
+    //Triggers +1 animation
+    const triggerPlusOneAnimation = () => {
+        plusOneOpacity.setValue(1); //Sets the +1 to 1 to make it visible
+        plusOneY.setValue(0); //Resets the y value for each subsequent press
+    
+        //Parallel is needed to allow for these two animations to run at the same time
+        Animated.parallel([
+            //Fades the +1 out over 500ms
+            Animated.timing(plusOneOpacity, {
+                toValue: 0,
+                duration: 500,
+                useNativeDriver: true,
+             }),
+            //Moves the +1 up the screen over 500ms
+            Animated.timing(plusOneY, {
+                toValue: -80,
+                duration: 500,
+                useNativeDriver: true,
+             }),
+        ]).start();
+    };
+
+    //Triggers the press if it is an adult
+    const handlePress = () => {
+        onPress();
+        if (item.stage === 'adult') {
+            triggerPlusOneAnimation();
+        }
+    };
+
+    return (
+        <Pressable
+            onPress={handlePress}
+            style={({ pressed }) => [
+                styles.card,
+                {
+                    //Changes the cards color and opacity when pressed
+                    backgroundColor: pressed ? 'white' : '#cad0d0',
+                    opacity: pressed ? 1 : 0.8,
+                },
+            ]}
+        >
+            <View style={styles.card}>
+                <Image source={item.image} style={styles.image} />
+                <Animated.View
+    style={[
+        styles.plusOneContainer,
+        {
+            opacity: plusOneOpacity,
+            transform: [{ translateY: plusOneY }],
+        },
+    ]}
+>
+    <Text style={styles.plusOneText}>+1</Text>
+    <Image
+        style={styles.coin}
+        source={require("../../assets/item sprites/coin/coin_sprite.png")}
+    />
+</Animated.View>
+
+            </View>
+        </Pressable>
+    );
+};
 
 const Inventory = () => {
     const creatureInventory = useStore(state => state.creatureInventory);
@@ -28,28 +100,17 @@ const Inventory = () => {
 
     //Renders the dragons to the screen
     const renderItem = ({ item }) => (
-        //Make the cards pressable for later coin functionality
-        <Pressable
+        <CreatureCard
+            item={item}
             onPress={() => {
                 triggerHapticFeedback();
-                //only adults can increment gold
-                if(item.stage === 'adult') {
+                if (item.stage === 'adult') {
                     incrementGold(item);
                 }
             }}
-                style={({ pressed }) => [
-                styles.card,
-                //Changes the cards color and opacity when pressed
-                { backgroundColor: pressed ? 'white' : '#cad0d0',
-                    opacity: pressed ? 1 : 0.8, 
-                }
-          ]}>
-            <View style={styles.card}>
-            <Image source={item.image} style={styles.image} />
-            </View>
-        </Pressable>
-      );
-    
+        />
+    );
+
     return (
         //Shows the image as the background for the screen
         <ImageBackground
@@ -212,4 +273,25 @@ const styles = StyleSheet.create({
         color: '#FFD700'
     },
 
+    plusOneContainer: {
+        position: 'absolute',
+        top: '35%',
+        right: '2%',
+        flexDirection: 'row',
+        alignItems: 'center',
+    },    
+
+    plusOneText: {
+        fontSize: 40,
+        fontWeight: 'bold',
+        color: 'black',
+        marginRight: 4,
+    },
+    
+    coin: {
+        width: '60%',
+        height: '60%',
+        resizeMode: 'contain',
+    },
+    
 });

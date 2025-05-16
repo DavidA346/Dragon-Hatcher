@@ -100,8 +100,12 @@ const useStore = create((set, get) => ({
   // Load inventory
   loadInventory: async () => {
     const savedInventory = await AsyncStorage.getItem('creatureInventory');
-    if (savedInventory !== null) {
+    if (savedInventory) {
       set({ creatureInventory: JSON.parse(savedInventory) });
+    }
+
+    else {
+      set({ creatureInventory: [] });  // Set to an empty array if no inventory exists
     }
   },
   // Save inventory
@@ -122,24 +126,36 @@ const useStore = create((set, get) => ({
    //Retrieves the currency
    const savedCurrency = await AsyncStorage.getItem('currency');
    //If saved Currency is not 0 then set it to a number of base 10
-   if (savedCurrency !== null) {
-     set({ currency: parseInt(savedCurrency, 10) || 0 });
+   if (savedCurrency !== null && savedCurrency !== undefined) {
+    set({ currency: parseInt(savedCurrency, 10) || 0 });
+   } 
+  
+   else {
+    set({ currency: 0 });  // Default to 0 if no saved currency
    }
  },
 
  //Loads the hatched eggs from AsyncStorage when the app starts
  loadHatchedEggs: async () => {
    const savedHatchedEggs = await AsyncStorage.getItem('hatchedEggs');
-   if (savedHatchedEggs !== null) {
+   if (savedHatchedEggs !== null && savedHatchedEggs !== undefined) {
      set({ hatchedEggs: JSON.parse(savedHatchedEggs) });
+   }
+
+   else {
+     set({ hatchedEggs: [] });
    }
  },
 
  //Loads the current egg progress from AsyncStorage when the app starts
  loadCurrentEgg: async () => {
    const savedEgg = await AsyncStorage.getItem('egg');
-   if (savedEgg !== null) {
+   if (savedEgg !== null && savedEgg !== undefined) {
      set({ egg: JSON.parse(savedEgg) });
+   }
+
+   else {
+    set({ egg: createEgg([]) });
    }
  },
 
