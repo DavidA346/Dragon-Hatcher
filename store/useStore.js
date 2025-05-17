@@ -19,7 +19,7 @@ const useStore = create((set, get) => ({
  egg: createEgg([]),
  hatchedEggs: [],
  items: {
-  hammers: ['gude'],
+  hammers: [],
   totems: [],
   scrolls: []
  },
@@ -27,24 +27,33 @@ const useStore = create((set, get) => ({
  /*FUNCTIONS*/
 
  //item functionality
- getEquippedHammer: () => {
+getEquippedHammer: () => {
   const hammers = get().items.hammers;
   if (!hammers || hammers.length === 0) return null;
   return hammers[hammers.length - 1]; // assume last one is active
- },
+},
 
- getEquippedScroll: (type) => {
+getEquippedScroll: (type) => {
   const scrolls = get().items.scrolls?.[type];
   if (!scrolls || scrolls.length === 0) return null;
   return scrolls[scrolls.length - 1];
- },
+},
 
- loadItems: async () => {
-  const savedItems = await AsyncStorage.getItem('items');
-  if (savedItems !== null) {
-    set({items: JSON.parse(savedItems)});
-  } 
- },
+getEquippedScrolls: () => {
+    const { getEquippedScroll } = get();
+    return {
+      dragon: getEquippedScroll('dragon'),
+      wyvern: getEquippedScroll('wyvern'),
+      drake: getEquippedScroll('drake'),
+    };
+},
+
+loadItems: async () => {
+    const savedItems = await AsyncStorage.getItem('items');
+    if (savedItems !== null) {
+      set({items: JSON.parse(savedItems)});
+    } 
+},
 
  //change to saveItems
  savedItems: async(items) => {
@@ -53,22 +62,32 @@ const useStore = create((set, get) => ({
 
  purchaseItem: async (category, id, type = null) => {
   // Prevent buying already bought item
-  if (hasItem(state.items, category, id, type)) return;
-  const item = getItem(category, id, type);
   const state = get();
-  //check validity
-  if (!item || state.currency < item.cost) {
-    console.log("Item doesn't exist or not enough money");
+  if (hasItem(state.items, category, id, type))  {
+    console.warn(`Already own item: ${category}, ${id}, ${type}`);
     return;
   }
-  // Deduct currency and add item to inventory
-  const updatedCurrency = state.currency - item.cost;
+  const item = getItem(category, id, type);
+  console.log('item', getItem(category, id, type));
+  if (!item) {
+    console.warn(`Item not found: ${category}, ${id}, ${type}`);
+    return;
+  }
+  //check validity
+  console.log('currency:', state.gold);
+  if (!item || state.gold < item.cost) {
+    if(!item) console.warn("Item doesn't exist");
+    else console.warn("Not enough money");
+    return;
+  }  // Deduct currency and add item to inventory
+  const updatedCurrency = state.gold - item.cost;
   const updatedItems = updateItems(state, category, id, type);
 
   //update asyncStorage data
-  set({ currency: updatedCurrency, items: updatedItems });
+  console.info('bought item!');
+  set({ gold: updatedCurrency, items: updatedItems });
   await AsyncStorage.setItem('items', JSON.stringify(updatedItems));
-  await AsyncStorage.setItem('currency', updatedCurrency.toString());
+  await AsyncStorage.setItem('gold', updatedCurrency.toString());
  },
 
  getHammerBonusClicks: () => {
@@ -106,49 +125,6 @@ const useStore = create((set, get) => ({
   };
 
   return effects;
-},
-
-getScrollEffects: (type, id) => {
-  //const items = get().items.scrolls;
-  const scrolls = itemData.scrolls[type];
-  if (!scrolls) return null;
-  const scroll = scrolls.find(s => s.id === id);
-  return scroll?.effects || null;
-},
-
-applyScrollEffects: (type, id) => {
-  const effects = getScrollEffects(type, id);
-  if(hasEffect(effects, bonusAdultGold)) {
-    applyAdultGoldBonus(effects.bonusAdultGold);
-  }
-  else if(hasEffect(effects, goldMultiplier)) {
-    applyGoldMultiplier(effects.goldMultiplier);
-  }
-  else if(hasEffect(effects, goldBonus)) {
-    applyGoldBonus(effects.goldBonus);
-  }
-  else if(hasEffect(effects, clickReducer)) {
-    applyClickReducer(effects.clickReducer);
-  }
-},
-
-applyAdultGoldBonus: (value) => {
-  const dragonEffects = getScrollEffects('dragon', get().items.scrolls.dragon);
-  const goldFromAdultDragon = baseGold + (dragonEffects.bonusAdultGold || 0);
-  const drakeEffects = getScrollEffects('drake', get().items.scrolls.drake);
-  const goldFromAdultDrake = baseGold + (drakeEffects.bonusAdultGold || 0);
-  const wyvernEffects = getScrollEffects('wyvern', get().items.scrolls.wyvern);
-  const goldFromAdultWyvern = baseGold + (dragonEffects.bonusAdultGold || 0);
-},
-
-applyGoldMultiplier: (value) => {
-
-},
-applyGoldBonus: (value) => {
-
-},
-applyClickReducer: (value) => {
-
 },
 
  /* getGoldMultiplier: (type = null, scrollIds = null) => {
@@ -257,8 +233,8 @@ getGoldMultiplier: (type, scrollIds) => {
   incrementGold: async (creature, id = null) => {
     set(state => {
       const totemEffects = get().getTotemEffects(creature);
-      const scrollEffects = get().getScrollEffects();
-      const bonusGold = totemEffects?.goldBonus || scrollEffects?.goldBonus || 0;
+      //const scrollEffects = get().getScrollEffects();
+      const bonusGold = totemEffects?.goldBonus || 0;
       // const goldBonus = get().getGoldMultiplier();
 
       const newGold = state.gold + 1 + bonusGold;
@@ -285,7 +261,7 @@ getGoldMultiplier: (type, scrollIds) => {
   const totemClickBonus = totemEffects.clickBonus || 0;
   const totalClickBonus = hammerClickBonus + totemClickBonus;
 
-  const scrollEffects = get().getScrollEffects(egg, );
+  //const scrollEffects = get().getScrollEffects(egg, );
 
   const newProgress = egg.progress + 1 + totalClickBonus; //Persist the new score
   const percent = newProgress / egg.clicksNeeded;
@@ -373,13 +349,19 @@ getGoldMultiplier: (type, scrollIds) => {
      gold: 0,
      egg: firstEgg,
      hatchedEggs: [],
-     creatureInventory: []
+     creatureInventory: [],
+     items: {
+      hammers: [],
+      totems: [],
+      scrolls: []
+     }
    });
    get().saveCurrency(0);
    get().saveGold(0);
    get().saveHatchedEggs([]);
    get().saveCurrentEgg(firstEgg); //Reset the egg to the first state
    get().saveInventory([])
+   get().savedItems([])
  },
 
  //Load all saved values when the app starts

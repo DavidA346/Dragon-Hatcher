@@ -15,7 +15,7 @@ const EggClicker = () => {
  const plusOneY = useRef(new Animated.Value(0)).current;
 
  //Uses useStore to loads the saved data using AsyncStorage
- const { currency, incrementCurrency, egg, incrementEggProgress, initializeStore, resetProgress } = useStore();
+ const { currency, incrementCurrency, egg, incrementEggProgress, initializeStore, resetProgress, purchaseItem } = useStore();
 
  //Loads the user's data before rendering components
  useEffect(() => {
@@ -25,11 +25,18 @@ const EggClicker = () => {
 
  const { getEquippedHammer } = useStore.getState();
  const hammerId = getEquippedHammer();
+ //console.log('hammer:',hammerId);
  const hammerIcon = hammerId ? itemData.hammers[hammerId].image : null;
 
  const totemId = egg.type?.toLowerCase(); // 'dragon', 'drake', etc.
  const totemImage = itemData.totems[totemId]?.image;
  const ownsTotem = useStore.getState().items.totems?.includes(totemId);
+
+ const {getEquippedScrolls} = useStore.getState();
+ const equippedScrolls = getEquippedScrolls();
+ //console.log('scrolls:', equippedScrolls);
+
+ 
 
 
  //Handles the animation of the clicking of the egg and the +1 appearance

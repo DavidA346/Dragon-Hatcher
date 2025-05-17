@@ -15,10 +15,13 @@ export const hasItem = (stateItems, category, id, type = null) => {
 export const getItem = (category, id, type = null) => {
   if (category === 'scrolls') {
     if (!type || !itemData[category][type]) return null;
-    return itemData[category][type][id];
+    return itemData[category][type].find(item => item.id === id);
   }
-  return itemData[category][id];
-}
+  if (category === 'potions') {
+    return itemData[category].find(item => item.id === id); // for potions
+  }
+  return itemData[category][id]; // for hammers, totems
+};
 
 //return updated list of items for async
 export const updateItems = (state, category, id, type = null) => {
