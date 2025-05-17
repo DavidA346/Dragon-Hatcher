@@ -13,7 +13,7 @@
 - **Data Persistence**: AsyncStorage retains user progress even after app restarts
 - **Robust Testing**: Jest unit tests validate game logic and state transitions
 - **Scalable Asset Pipeline**: Easily supports multiple dragon types and sprite stages
-- ⚙**Built with Expo**: Simple setup and cross-platform mobile development
+- **Built with Expo**: Simple setup and cross-platform mobile development
 
 ---
 
@@ -52,7 +52,7 @@ cd Dragon-Hatcher
 npm install
 ```
 
-3. **Start the serve**
+3. **Start the server**
 ```bash
 npx expo start
 ```
