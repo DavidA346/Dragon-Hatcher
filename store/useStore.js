@@ -19,9 +19,9 @@ const useStore = create((set, get) => ({
  egg: createEgg([]),
  hatchedEggs: [],
  items: {
-  hammers: [],
+  hammers: ['gude'],
   totems: [],
-  scrolls: [],
+  scrolls: []
  },
 
  /*FUNCTIONS*/
@@ -309,11 +309,12 @@ getGoldMultiplier: (type, scrollIds) => {
 
     const base = creatureData[egg.color]; //adding this line to make it easier to read so creatureData[egg.color] only has to be called once
     const creature = {
-    id: Date.now().toString(),
-    name: egg.color,
-    type: base.type,
-    image: (base.babyImage !== null ? base.babyImage : base.adultImage),
-    stage: (base.babyImage !== null ? 'baby' : 'adult'),
+      id: Date.now().toString(),
+      name: egg.color,
+      type: base.type,
+      image: (base.babyImage !== null ? base.babyImage : base.adultImage),
+      stage: (base.babyImage !== null ? 'baby' : 'adult'),
+      hatchedAt: Date.now()
     };
     get().addCreatureToInventory(creature);
 
@@ -331,6 +332,38 @@ getGoldMultiplier: (type, scrollIds) => {
     set({ egg: updatedEgg });
   }
  },
+ growBabiesToAdults: () => {
+  const { creatureInventory, items } = get();
+  const now = Date.now();
+
+  const updatedInventory = creatureInventory.map(creature => {
+    if (creature.stage === 'baby') {
+      const base = creatureData[creature.name];
+      const growthTime = base.growthTimeMs ?? 60000;
+
+      const totemKey = creature.type.toLowerCase();
+      const hasTotem = items.totems.includes(totemKey);
+      const multiplier = hasTotem ? (itemData.totems[totemKey]?.effects?.growTimeMultiplier ?? 1) : 1;
+
+      const adjustedTime = growthTime * multiplier;
+
+      console.log("Time: ", now - creature.hatchedAt);
+
+      if (now - creature.hatchedAt >= adjustedTime) {
+        return {
+          ...creature,
+          stage: 'adult',
+          image: base.adultImage,
+        };
+      }
+    }
+
+    return creature;
+  });
+
+  set({ creatureInventory: updatedInventory });
+  get().saveInventory(updatedInventory);
+},
 
  //Reset all game progress (currency, eggs, and hatched list) for later testing
  resetProgress: async () => {
