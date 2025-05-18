@@ -150,7 +150,8 @@ getScrollEffect: () => {
 getScrollMultiplier: () => {
   const scrollId = get().getEquippedScroll('gold');
   const item = getItem('scrolls', scrollId, 'gold');
-  const boost = item?.effects?.clickReducer ?? 1;
+  //console.log(item);
+  const boost = item?.effects?.goldMultiplier ?? 1;
   return boost;
 },
 
@@ -254,8 +255,11 @@ getScrollMultiplier: () => {
       const bonusGold = totemEffects?.goldBonus || 0;
       // const goldBonus = get().getGoldMultiplier();
       const goldMult = get().getScrollMultiplier();
+      //console.log('fff',goldMult);
       //const newGold = state.gold + 1 + bonusGold;
       const newGold = state.gold + ((1+ bonusGold + scrollBonus) * goldMult);
+      //console.log(state.gold);
+      //console.log(newGold);
       get().saveGold(newGold);
       return { gold: newGold };
     });

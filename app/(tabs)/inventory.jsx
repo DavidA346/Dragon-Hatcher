@@ -7,6 +7,9 @@ import React, { useRef, useEffect } from "react";
 const CreatureCard = ({ item, onPress }) => {
     //Controls opacity of the +1, starts at 0 as it is hidden until pressed
     const goldBonus = useStore.getState().getScrollEffect();
+    const goldMultBonus = useStore.getState().getScrollMultiplier();
+    const gold = useStore(state => state.gold);
+    const goldEffect = (1 + goldBonus) * goldMultBonus;
 
     const plusOneOpacity = useRef(new Animated.Value(0)).current;
     //Controls the y position of the +1 and moves upward when pressed, also starts as 0
@@ -73,7 +76,7 @@ const CreatureCard = ({ item, onPress }) => {
         },
     ]}
 >
-    <Text style={styles.plusOneText}>+{1+goldBonus}</Text>
+    <Text style={styles.plusOneText}>+{goldEffect}</Text>
     <Image
         style={styles.coin}
         source={require("../../assets/item sprites/coin/coin_sprite.png")}
