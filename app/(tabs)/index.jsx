@@ -32,8 +32,15 @@ const EggClicker = () => {
  const totemImage = itemData.totems[totemId]?.image;
  const ownsTotem = useStore.getState().items.totems?.includes(totemId);
 
- const {getEquippedScrolls} = useStore.getState();
+ const {getEquippedScrolls, getEquippedScroll, getEggBoost} = useStore.getState();
  const equippedScrolls = getEquippedScrolls();
+ //console.log('scrolls', equippedScrolls);
+ const eggId = equippedScrolls.egg;
+ //console.log(eggId);
+ const scrollImage = eggId ? itemData.scrolls['egg'].find(item => item.id === eggId)?.image : null;
+ const boost = getEggBoost();
+ //console.log(boost);
+ //console.log(scrollImage);
  //console.log('scrolls:', equippedScrolls);
 
  
@@ -128,7 +135,7 @@ const EggClicker = () => {
              <View
                style={[
                  styles.progressBarFill,
-                 { width: `${(egg.progress / egg.clicksNeeded) * 100}%` },
+                 { width: `${(egg.progress / (egg.clicksNeeded * (1-boost)) * 100)}%` },
                ]}
              />
              <Text style={styles.progressBarText}>
@@ -154,6 +161,9 @@ const EggClicker = () => {
          {hammerIcon && (<Image source={hammerIcon} style={styles.hammerIcon} />)}
          {totemImage && ownsTotem && (
           <Image source={totemImage} style={[styles.hammerIcon, { marginLeft: 10 }]} />
+          )}
+        {scrollImage && (
+          <Image source={scrollImage} style={[styles.hammerIcon, {marginLeft: 10}]} />
           )}
        </View>
      </View>

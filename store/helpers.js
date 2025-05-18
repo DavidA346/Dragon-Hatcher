@@ -15,6 +15,7 @@ export const hasItem = (stateItems, category, id, type = null) => {
 export const getItem = (category, id, type = null) => {
   if (category === 'scrolls') {
     if (!type || !itemData[category][type]) return null;
+    console.log(itemData[category][type].find(item => item.id === id));
     return itemData[category][type].find(item => item.id === id);
   }
   if (category === 'potions') {

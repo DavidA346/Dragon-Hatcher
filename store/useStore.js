@@ -70,13 +70,11 @@ loadItems: async () => {
     return;
   }
   const item = getItem(category, id, type);
-  console.log('item', getItem(category, id, type));
   if (!item) {
     console.warn(`Item not found: ${category}, ${id}, ${type}`);
     return;
   }
   //check validity
-  console.log('currency:', state.gold);
   if (!item || state.gold < item.cost) {
     if(!item) console.warn("Item doesn't exist");
     else console.warn("Not enough money");
@@ -84,8 +82,6 @@ loadItems: async () => {
   }  // Deduct currency and add item to inventory
   const updatedCurrency = state.gold - item.cost;
   const updatedItems = updateItems(state, category, id, type);
-  console.log(updatedItems);
-
   //update asyncStorage data
   console.info('bought item!');
   set({ gold: updatedCurrency, items: updatedItems });
@@ -134,6 +130,14 @@ loadItems: async () => {
 
   return effects;
 },
+
+ //Add to egg.boost
+ getEggBoost: () => {
+  const scrollId = get().getEquippedScroll('egg');
+  const item = getItem('scrolls', scrollId, 'egg');
+  const boost = item?.effects?.clickReducer ?? 1;
+  return boost;
+ },
 
  /* getGoldMultiplier: (type = null, scrollIds = null) => {
   const totems = get().items.totems;
@@ -268,11 +272,10 @@ getGoldMultiplier: (type, scrollIds) => {
   const totemEffects = get().getTotemEffects(egg); 
   const totemClickBonus = totemEffects.clickBonus || 0;
   const totalClickBonus = hammerClickBonus + totemClickBonus;
-
-  //const scrollEffects = get().getScrollEffects(egg, );
-
+  const scrollEffects = get().getEggBoost();
   const newProgress = egg.progress + 1 + totalClickBonus; //Persist the new score
-  const percent = newProgress / egg.clicksNeeded;
+  const clicksNeeded = egg.clicksNeeded - (egg.clicksNeeded * (scrollEffects));
+  const percent = newProgress / clicksNeeded;
 
   //Determine egg stage based on progress percentage
   const newStage =
@@ -284,10 +287,11 @@ getGoldMultiplier: (type, scrollIds) => {
     ...egg,
     progress: newProgress,
     img: creatureData[egg.color].egg.images[newStage],
+
   };
 
   //If egg is done hatching
-  if (newProgress >= egg.clicksNeeded) {
+  if (newProgress >= clicksNeeded) {
     const newHatched = [...hatchedEggs, egg.color];
     get().saveHatchedEggs(newHatched); //Save hatched eggs to AsyncStorage
 
