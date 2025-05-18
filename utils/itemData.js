@@ -131,7 +131,7 @@ const itemData = {
               description: 'Describes Eggs. Faster Hatching rate (⅔ clicks needed).',
               cost: 500,
               effects: {
-                clickReducer: 2/3
+                clickReducer: 1/3
               }
           },
           {

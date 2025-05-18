@@ -97,11 +97,6 @@ loadItems: async () => {
   }, 0)
  },
 
- getScrollEggBonus: () => {
-  const bonus = getEquippedScroll(egg);
-  return bonus.effects.clickReducer;
-},
-
  getTotemEffects: (target) => {
   const { items, creatureInventory } = get();
 
@@ -131,25 +126,32 @@ loadItems: async () => {
   return effects;
 },
 
+getScrollEffect: () => {
+  const scroll = get().getEquippedScroll('gold');
+  if(!scroll) return 0;
+  const item = getItem('scrolls', scroll, 'gold');
+  return item?.effects?.goldBonus?? 0;
+},
+
  //Add to egg.boost
  getEggBoost: () => {
   const scrollId = get().getEquippedScroll('egg');
   const item = getItem('scrolls', scrollId, 'egg');
-  const boost = item?.effects?.clickReducer ?? 1;
+  const boost = item?.effects?.clickReducer ?? 0;
   return boost;
  },
 
- /* getGoldMultiplier: (type = null, scrollIds = null) => {
+ getGoldMultiplier: (type = null, scrollIds = null) => {
   const totems = get().items.totems;
   
   return totems.length > 0 ? 2 : 1; // customize if each totem gives separate boost
-}, */
+},
 
-getGoldMultiplier: (type, scrollIds) => {
-  return scrollIds.reduce((multiplier, id) => {
-    const scroll = itemData.scrolls[type]?.find(s => s.id === id);
-    return multiplier * (scroll?.effects?.goldMultiplier || 1);
-  }, 1);
+getScrollMultiplier: () => {
+  const scrollId = get().getEquippedScroll('gold');
+  const item = getItem('scrolls', scrollId, 'gold');
+  const boost = item?.effects?.clickReducer ?? 1;
+  return boost;
 },
 
  // Creature Inventory Creation, Loading/Saving, and Adding
@@ -245,11 +247,15 @@ getGoldMultiplier: (type, scrollIds) => {
   incrementGold: async (creature, id = null) => {
     set(state => {
       const totemEffects = get().getTotemEffects(creature);
-      //const scrollEffects = get().getScrollEffects();
+      const scrollEffects = get().getScrollEffect();
+      //console.log('dddd', scrollEffects);
+      const scrollBonus = scrollEffects?? 0;
+      //console.log('dddd', scrollBonus);
       const bonusGold = totemEffects?.goldBonus || 0;
       // const goldBonus = get().getGoldMultiplier();
-
-      const newGold = state.gold + 1 + bonusGold;
+      const goldMult = get().getScrollMultiplier();
+      //const newGold = state.gold + 1 + bonusGold;
+      const newGold = state.gold + ((1+ bonusGold + scrollBonus) * goldMult);
       get().saveGold(newGold);
       return { gold: newGold };
     });
@@ -274,7 +280,7 @@ getGoldMultiplier: (type, scrollIds) => {
   const totalClickBonus = hammerClickBonus + totemClickBonus;
   const scrollEffects = get().getEggBoost();
   const newProgress = egg.progress + 1 + totalClickBonus; //Persist the new score
-  const clicksNeeded = egg.clicksNeeded - (egg.clicksNeeded * (scrollEffects));
+  const clicksNeeded = egg.clicksNeeded * (1-scrollEffects);
   const percent = newProgress / clicksNeeded;
 
   //Determine egg stage based on progress percentage

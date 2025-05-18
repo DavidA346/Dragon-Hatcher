@@ -135,7 +135,7 @@ const EggClicker = () => {
              <View
                style={[
                  styles.progressBarFill,
-                 { width: `${(egg.progress / (egg.clicksNeeded * (1-boost)) * 100)}%` },
+                 { width: `${(egg.progress / (egg.clicksNeeded * (1-boost))) * 100}%` },
                ]}
              />
              <Text style={styles.progressBarText}>
