@@ -45,6 +45,8 @@ getEquippedScrolls: () => {
       dragon: getEquippedScroll('dragon'),
       wyvern: getEquippedScroll('wyvern'),
       drake: getEquippedScroll('drake'),
+      egg: getEquippedScroll('egg'),
+      gold: getEquippedScroll('gold'),
     };
 },
 
@@ -82,6 +84,7 @@ loadItems: async () => {
   }  // Deduct currency and add item to inventory
   const updatedCurrency = state.gold - item.cost;
   const updatedItems = updateItems(state, category, id, type);
+  console.log(updatedItems);
 
   //update asyncStorage data
   console.info('bought item!');
@@ -97,6 +100,11 @@ loadItems: async () => {
     return total + (item ?.bonusClicks || 0);
   }, 0)
  },
+
+ getScrollEggBonus: () => {
+  const bonus = getEquippedScroll(egg);
+  return bonus.effects.clickReducer;
+},
 
  getTotemEffects: (target) => {
   const { items, creatureInventory } = get();
@@ -361,7 +369,11 @@ getGoldMultiplier: (type, scrollIds) => {
    get().saveHatchedEggs([]);
    get().saveCurrentEgg(firstEgg); //Reset the egg to the first state
    get().saveInventory([])
-   get().savedItems([])
+   get().saveItems({
+    hammers: [],
+    totems: [],
+    scrolls: []
+    });
  },
 
  //Load all saved values when the app starts
