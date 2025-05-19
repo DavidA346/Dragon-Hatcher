@@ -126,10 +126,10 @@ loadItems: async () => {
   return effects;
 },
 
-getScrollEffect: () => {
-  const scroll = get().getEquippedScroll('gold');
+getScrollEffect: (type) => {
+  const scroll = get().getEquippedScroll(type);
   if(!scroll) return 0;
-  const item = getItem('scrolls', scroll, 'gold');
+  const item = getItem('scrolls', scroll, type);
   return item?.effects?.goldBonus?? 0;
 },
 
@@ -147,12 +147,25 @@ getScrollEffect: () => {
   return totems.length > 0 ? 2 : 1; // customize if each totem gives separate boost
 },
 
-getScrollMultiplier: () => {
-  const scrollId = get().getEquippedScroll('gold');
-  const item = getItem('scrolls', scrollId, 'gold');
-  //console.log(item);
+getScrollMultiplier: (type) => {
+  const scrollId = get().getEquippedScroll(type);
+  const item = getItem('scrolls', scrollId, type);
   const boost = item?.effects?.goldMultiplier ?? 1;
+  if ((type !== 'egg' && type !== 'gold') && item?.effects?.goldMultiplier) {
+    const {creatureInventory } = get();
+    const ownedCount = creatureInventory.filter(
+      c => c.type.toLowerCase() === type
+    ).length;
+    return ownedCount;
+  }
   return boost;
+},
+
+getCreatureBonus: (type) => {
+  const goldMult = get().getScrollMultiplier(type);
+  const goldBonus = get().getScrollEffect(type);
+  
+
 },
 
  // Creature Inventory Creation, Loading/Saving, and Adding
@@ -247,19 +260,16 @@ getScrollMultiplier: () => {
  //Increment gold (only adult creatures) and persist it
   incrementGold: async (creature, id = null) => {
     set(state => {
+      const type = creature.type.toLowerCase();
       const totemEffects = get().getTotemEffects(creature);
-      const scrollEffects = get().getScrollEffect();
-      //console.log('dddd', scrollEffects);
-      const scrollBonus = scrollEffects?? 0;
-      //console.log('dddd', scrollBonus);
+      const goldScrollEffect = get().getScrollEffect('gold')?? 0;
+      const creatureScrollEffect = get().getScrollEffect(type) ?? 0;
+      const scrollBonus = goldScrollEffect + creatureScrollEffect;
       const bonusGold = totemEffects?.goldBonus || 0;
-      // const goldBonus = get().getGoldMultiplier();
-      const goldMult = get().getScrollMultiplier();
-      //console.log('fff',goldMult);
-      //const newGold = state.gold + 1 + bonusGold;
-      const newGold = state.gold + ((1+ bonusGold + scrollBonus) * goldMult);
-      //console.log(state.gold);
-      //console.log(newGold);
+      const goldMult = get().getScrollMultiplier('gold')?? 1;
+      const goldMult2 = get().getScrollMultiplier(type)?? 1;
+      const scrollMult = goldMult + goldMult2;
+      const newGold = state.gold + ((1+ bonusGold + scrollBonus) * scrollMult);
       get().saveGold(newGold);
       return { gold: newGold };
     });

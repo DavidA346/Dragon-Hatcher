@@ -173,7 +173,7 @@ const Shop = () => {
                                 ]}
                                 onPress={() => {
                                     triggerHapticFeedback();
-                                    purchaseItem('scrolls', 'gold3', 'gold');
+                                    purchaseItem('scrolls', 'wyvern2', 'wyvern');
                                     console.log(`Pressed: ${item.name}`);
                                 }}
                                 >

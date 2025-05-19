@@ -33,7 +33,7 @@ const itemData = {
               description: 'Describes Dragons. Increases gold earned from Adult-dragons (+{4} gold on click).',
               cost: 2100,
               effects: {
-                bonusAdultGold: 4
+                goldBonus: 4
               }
           },
           {
@@ -55,7 +55,7 @@ const itemData = {
               description: 'Describes Drakes. Increases gold earned from Adult-drakes (+{4} gold on click).',
               cost: 1300,
               effects: {
-                bonusAdultGold: 4
+                goldBonus: 4
               }
           },
           {
@@ -77,7 +77,7 @@ const itemData = {
               description: 'Describes Wyverns. Increases gold earned from Adult-wyverns (+{4} gold on click).',
               cost: 800,
               effects: {
-                bonusAdultGold: 4
+                goldBonus: 4
               }
           },
           {
