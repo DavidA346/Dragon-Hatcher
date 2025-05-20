@@ -24,9 +24,7 @@ const EggClicker = () => {
    initializeStore();
  }, []);
 
- const { getEquippedHammer } = useStore.getState();
- const hammerId = getEquippedHammer();
- const hammerIcon = hammerId ? itemData.hammers[hammerId].image : null;
+ const ownedHammerIds = useStore.getState().items.hammers || [];
 
  const totemId = egg.type?.toLowerCase(); // 'dragon', 'drake', etc.
  const totemImage = itemData.totems[totemId]?.image;
@@ -164,11 +162,25 @@ const EggClicker = () => {
            ]}
          >
            +{clickBonus}
-         </Animated.Text> 
-         {hammerIcon && (<Image source={hammerIcon} style={styles.hammerIcon} />)}
-         {totemImage && ownsTotem && (
-          <Image source={totemImage} style={[styles.hammerIcon, { marginLeft: 10 }]} />
-          )}
+         </Animated.Text>
+
+         {/* Show all active */}
+         <View style={styles.itemBar}>
+          <Text style={styles.itemBarText}>Active Items:</Text>
+            {/* Show all owned hammers */}
+            {ownedHammerIds.map((id) => {
+              const hammer = itemData.hammers[id];
+              if (!hammer) return null;
+
+              return (
+              <View key={id} style={styles.hammerContainer}>
+                <Image source={hammer.image} style={styles.hammerIcon} />
+                <Text style={styles.hammerText}>
+                </Text>
+              </View>
+              );
+            })}
+        </View>
        </View>
      </View>
    </ImageBackground>
@@ -253,4 +265,32 @@ const styles = StyleSheet.create({
    color: 'black',
    fontWeight: 'bold',
  },
-  });
+
+ itemBar: {
+  flexDirection: 'row',
+  gap: '2%',
+  backgroundColor: 'white',
+  paddingLeft: '1%',
+  paddingRight: '1%',
+  borderRadius: 20,
+  marginTop: '3%'
+ },
+
+ itemBarText: {
+  color: 'black',
+  fontWeight: 'bold',
+  fontSize: 16,
+  marginTop: '4%'
+ },
+
+ hammerContainer: {
+  alignItems: 'center',
+  marginTop: '2%'
+},
+
+hammerText: {
+  fontSize: 10,
+  color: 'black',
+},
+
+});
