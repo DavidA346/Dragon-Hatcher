@@ -6,6 +6,11 @@ import React, { useRef, useEffect } from "react";
 //To allow for +1 on each dragon
 const CreatureCard = ({ item, onPress }) => {
     //Controls opacity of the +1, starts at 0 as it is hidden until pressed
+    //const goldBonus = useStore.getState().getScrollEffect('gold');
+    //const goldMultBonus = useStore.getState().getScrollMultiplier('gold');
+    const gold = useStore(state => state.gold);
+    //const goldEffect = (1 + goldBonus) * goldMultBonus;
+
     const plusOneOpacity = useRef(new Animated.Value(0)).current;
     //Controls the y position of the +1 and moves upward when pressed, also starts as 0
     const plusOneY = useRef(new Animated.Value(0)).current;

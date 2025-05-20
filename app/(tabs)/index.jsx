@@ -16,7 +16,7 @@ const EggClicker = () => {
  const plusOneY = useRef(new Animated.Value(0)).current;
 
  //Uses useStore to loads the saved data using AsyncStorage
- const { currency, incrementCurrency, egg, incrementEggProgress, initializeStore, resetProgress } = useStore();
+ const { currency, incrementCurrency, egg, incrementEggProgress, initializeStore, resetProgress, purchaseItem } = useStore();
 
  //Loads the user's data before rendering components
  useEffect(() => {
@@ -30,6 +30,11 @@ const EggClicker = () => {
  const totemImage = itemData.totems[totemId]?.image;
  const ownsTotem = useStore.getState().items.totems?.includes(totemId);
 
+ const {getEquippedScrolls, getEquippedScroll, getEggBoost} = useStore.getState();
+ const equippedScrolls = getEquippedScrolls();
+ const eggId = equippedScrolls.egg;
+ const scrollImage = eggId ? itemData.scrolls['egg'].find(item => item.id === eggId)?.image : null;
+ const boost = getEggBoost();
 
  //Handles the animation of the clicking of the egg and the +1 appearance
  const handlePress = () => {
@@ -140,7 +145,7 @@ const EggClicker = () => {
              <View
                style={[
                  styles.progressBarFill,
-                 { width: `${(egg.progress / egg.clicksNeeded) * 100}%` },
+                 { width: `${(egg.progress / (egg.clicksNeeded * (1-boost))) * 100}%` },
                ]}
              />
              <Text style={styles.progressBarText}>
@@ -163,7 +168,6 @@ const EggClicker = () => {
          >
            +{clickBonus}
          </Animated.Text>
-
          {/* Show all active */}
          <View style={styles.itemBar}>
           <Text style={styles.itemBarText}>Active Items:</Text>

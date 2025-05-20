@@ -128,6 +128,8 @@ const shopItems = [
 
 const Shop = () => {
     const gold = useStore(state => state.gold);
+    const {purchaseItem } = useStore();
+
     //Function to trigger haptic feedback
     const triggerHapticFeedback = () => {
         Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
@@ -171,6 +173,7 @@ const Shop = () => {
                                 ]}
                                 onPress={() => {
                                     triggerHapticFeedback();
+                                    purchaseItem('scrolls', 'wyvern2', 'wyvern');
                                     console.log(`Pressed: ${item.name}`);
                                 }}
                                 >
