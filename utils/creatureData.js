@@ -116,7 +116,7 @@ const creatureData = {
       ],
       rarity: 1.0,
       clicksNeeded: 30,
-      weight: 1
+      weight: 3
     },
     growthTimeMs: 240000, //4mins
     babyImage: require('../assets/Drakes/Black-Violet/baby.gif'),
@@ -148,7 +148,7 @@ const creatureData = {
       ],
       rarity: 1.0,
       clicksNeeded: 10,
-      weight: 3
+      weight: 5
     },
     growthTimeMs: 120000, //2mins
     babyImage: require('../assets/Wyverns/Blue-Green/baby.gif'),
