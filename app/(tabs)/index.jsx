@@ -3,6 +3,7 @@ import { StyleSheet, View, Pressable, Animated, Text, ImageBackground, Image, Bu
 import useStore from '../../store/useStore';
 import itemData from '../../utils/itemData';
 import * as Haptics from 'expo-haptics';
+import Toast from 'react-native-toast-message';
 
 const EggClicker = () => {
  const [clickBonus, setClickBonus] = useState(1);
@@ -34,6 +35,11 @@ const EggClicker = () => {
 
  //Handles the animation of the clicking of the egg and the +1 appearance
  const handlePress = () => {
+  // If no egg or clicksNeeded is 0 or undefined, don't allow clicking
+  if (!egg || !egg.clicksNeeded || egg.clicksNeeded === 0) {
+    return;
+  }
+
   Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
 
   const hammerClickBonus = useStore.getState().getHammerBonusClicks?.() || 0;
@@ -41,6 +47,10 @@ const EggClicker = () => {
   const totemClickBonus = totemEffects.clickBonus || 0;
   const total = 1 + hammerClickBonus + totemClickBonus;
   setClickBonus(total); // update visible +X number
+
+  // Check if the egg is about to hatch
+  const currentProgress = egg.progress;
+  const clicksNeeded = egg.clicksNeeded;
 
    //Controls the egg bounce effect as a sequence, makes tge egg first scale up by 1.2
    //then back down to 1 over 100ms
@@ -56,6 +66,17 @@ const EggClicker = () => {
        useNativeDriver: true,
      }),
    ]).start();
+
+  // If progress + total clicks will hatch the egg, show toast
+  if (currentProgress + total >= clicksNeeded) {
+    Toast.show({
+      type: 'success',
+      text1: 'Egg Hatched!',
+      text2: `Your ${egg.type} has hatched!`,
+      position: 'top',
+      visibilityTime: 3000,
+    });
+  }
 
    //Increment the currency and persist it
    //incrementCurrency();

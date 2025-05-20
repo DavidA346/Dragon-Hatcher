@@ -9,7 +9,7 @@ export const createEgg = (hatchedEggs = []) => {
   const defaultEgg = creatureData.Red.egg;
    return {
      color: defaultEgg.color,
-     type: defaultEgg.type,
+     type: creatureData.Red.type,
      rarity: defaultEgg.rarity,
      clicksNeeded: defaultEgg.clicksNeeded,
      progress: 0,
