@@ -292,12 +292,12 @@ const styles = StyleSheet.create({
     },
 
     scrollContainer: {
-    height: '71%',
-    width: '100%',
-    paddingHorizontal: '3%',
+        height: '71%',
+        width: '100%',
+        paddingHorizontal: '3%',
     },
 
     itemPressed: {
-  backgroundColor: 'white',
+        backgroundColor: 'white',
     },
 })

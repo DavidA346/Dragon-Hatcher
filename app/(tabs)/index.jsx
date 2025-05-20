@@ -3,6 +3,7 @@ import { StyleSheet, View, Pressable, Animated, Text, ImageBackground, Image, Bu
 import useStore from '../../store/useStore';
 import itemData from '../../utils/itemData';
 import * as Haptics from 'expo-haptics';
+import Toast from 'react-native-toast-message';
 
 const EggClicker = () => {
  const [clickBonus, setClickBonus] = useState(1);
@@ -23,10 +24,7 @@ const EggClicker = () => {
    initializeStore();
  }, []);
 
- const { getEquippedHammer } = useStore.getState();
- const hammerId = getEquippedHammer();
- //console.log('hammer:',hammerId);
- const hammerIcon = hammerId ? itemData.hammers[hammerId].image : null;
+ const ownedHammerIds = useStore.getState().items.hammers || [];
 
  const totemId = egg.type?.toLowerCase(); // 'dragon', 'drake', etc.
  const totemImage = itemData.totems[totemId]?.image;
@@ -34,20 +32,17 @@ const EggClicker = () => {
 
  const {getEquippedScrolls, getEquippedScroll, getEggBoost} = useStore.getState();
  const equippedScrolls = getEquippedScrolls();
- //console.log('scrolls', equippedScrolls);
  const eggId = equippedScrolls.egg;
- //console.log(eggId);
  const scrollImage = eggId ? itemData.scrolls['egg'].find(item => item.id === eggId)?.image : null;
  const boost = getEggBoost();
- //console.log(boost);
- //console.log(scrollImage);
- //console.log('scrolls:', equippedScrolls);
-
- 
-
 
  //Handles the animation of the clicking of the egg and the +1 appearance
  const handlePress = () => {
+  // If no egg or clicksNeeded is 0 or undefined, don't allow clicking
+  if (!egg || !egg.clicksNeeded || egg.clicksNeeded === 0) {
+    return;
+  }
+
   Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
 
   const hammerClickBonus = useStore.getState().getHammerBonusClicks?.() || 0;
@@ -55,6 +50,10 @@ const EggClicker = () => {
   const totemClickBonus = totemEffects.clickBonus || 0;
   const total = 1 + hammerClickBonus + totemClickBonus;
   setClickBonus(total); // update visible +X number
+
+  // Check if the egg is about to hatch
+  const currentProgress = egg.progress;
+  const clicksNeeded = egg.clicksNeeded;
 
    //Controls the egg bounce effect as a sequence, makes tge egg first scale up by 1.2
    //then back down to 1 over 100ms
@@ -70,6 +69,17 @@ const EggClicker = () => {
        useNativeDriver: true,
      }),
    ]).start();
+
+  // If progress + total clicks will hatch the egg, show toast
+  if (currentProgress + total >= clicksNeeded) {
+    Toast.show({
+      type: 'success',
+      text1: 'Egg Hatched!',
+      text2: `Your ${egg.type} has hatched!`,
+      position: 'top',
+      visibilityTime: 3000,
+    });
+  }
 
    //Increment the currency and persist it
    //incrementCurrency();
@@ -157,14 +167,24 @@ const EggClicker = () => {
            ]}
          >
            +{clickBonus}
-         </Animated.Text> 
-         {hammerIcon && (<Image source={hammerIcon} style={styles.hammerIcon} />)}
-         {totemImage && ownsTotem && (
-          <Image source={totemImage} style={[styles.hammerIcon, { marginLeft: 10 }]} />
-          )}
-        {scrollImage && (
-          <Image source={scrollImage} style={[styles.hammerIcon, {marginLeft: 10}]} />
-          )}
+         </Animated.Text>
+         {/* Show all active */}
+         <View style={styles.itemBar}>
+          <Text style={styles.itemBarText}>Active Items:</Text>
+            {/* Show all owned hammers */}
+            {ownedHammerIds.map((id) => {
+              const hammer = itemData.hammers[id];
+              if (!hammer) return null;
+
+              return (
+              <View key={id} style={styles.hammerContainer}>
+                <Image source={hammer.image} style={styles.hammerIcon} />
+                <Text style={styles.hammerText}>
+                </Text>
+              </View>
+              );
+            })}
+        </View>
        </View>
      </View>
    </ImageBackground>
@@ -249,4 +269,32 @@ const styles = StyleSheet.create({
    color: 'black',
    fontWeight: 'bold',
  },
-  });
+
+ itemBar: {
+  flexDirection: 'row',
+  gap: '2%',
+  backgroundColor: 'white',
+  paddingLeft: '1%',
+  paddingRight: '1%',
+  borderRadius: 20,
+  marginTop: '3%'
+ },
+
+ itemBarText: {
+  color: 'black',
+  fontWeight: 'bold',
+  fontSize: 16,
+  marginTop: '4%'
+ },
+
+ hammerContainer: {
+  alignItems: 'center',
+  marginTop: '2%'
+},
+
+hammerText: {
+  fontSize: 10,
+  color: 'black',
+},
+
+});
