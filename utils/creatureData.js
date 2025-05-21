@@ -138,6 +138,22 @@ const creatureData = {
     babyImage: require('../assets/Drakes/Green-Red/baby.gif'),
     adultImage: require('../assets/Drakes/Green-Red/adult.gif')
   },
+  'Orange-Purple': {
+    type: 'Drake',
+    egg: {
+      images: [
+        require('../assets/Drakes/Orange-Purple/egg_sprites/sprite_0.png'),
+        require('../assets/Drakes/Orange-Purple/egg_sprites/sprite_1.png'),
+        require('../assets/Drakes/Orange-Purple/egg_sprites/sprite_2.png'),
+      ],
+      rarity: 1.0,
+      clicksNeeded: 30,
+      weight: 3
+    },
+    growthTimeMs: 240000, //4mins
+    babyImage: require('../assets/Drakes/Orange-Purple/baby.gif'),
+    adultImage: require('../assets/Drakes/Orange-Purple/adult.gif')
+  },
   'Blue-Green': {
     type: 'Wyvern',
     egg: {
@@ -169,6 +185,22 @@ const creatureData = {
     growthTimeMs: 120000, //2mins
     babyImage: require('../assets/Wyverns/Brown-Green/baby.gif'),
     adultImage: require('../assets/Wyverns/Brown-Green/adult.gif')
+  },
+  'Gray-Blue': {
+    type: 'Wyvern',
+    egg: {
+      images: [
+        require('../assets/Wyverns/Gray-Blue/egg_sprites/sprite_0.png'),
+        require('../assets/Wyverns/Gray-Blue/egg_sprites/sprite_1.png'),
+        require('../assets/Wyverns/Gray-Blue/egg_sprites/sprite_2.png'),
+      ],
+      rarity: 1.0,
+      clicksNeeded: 10,
+      weight: 5
+    },
+    growthTimeMs: 120000, //2mins
+    babyImage: require('../assets/Wyverns/Gray-Blue/baby.gif'),
+    adultImage: require('../assets/Wyverns/Gray-Blue/adult.gif')
   },
 };
  

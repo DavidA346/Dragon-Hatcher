@@ -146,8 +146,8 @@ const Inventory = () => {
                     <View>
                         <Text style={styles.stats}>Totals</Text>
                         <Text style={styles.dragonText}>Dragons: {dragonCollection.length}/6</Text>
-                        <Text style={styles.drakesText}>Drakes: {drakeCollection.length}/2</Text>
-                        <Text style={styles.wyvernsText}>Wyverns: {wyvernCollection.length}/2</Text>
+                        <Text style={styles.drakesText}>Drakes: {drakeCollection.length}/3</Text>
+                        <Text style={styles.wyvernsText}>Wyverns: {wyvernCollection.length}/3</Text>
                     </View>
                 </View>
 
@@ -173,18 +173,18 @@ const Inventory = () => {
                 <FlatList  data={drakeCollection}
                             renderItem={renderItem}
                             keyExtractor={(item) => item.id}
-                            numColumns={2}
+                            numColumns={3}
                             contentContainerStyle={styles.drakesGrid}
-                            style={styles.TwoColumnList}
+                            //style={styles.TwoColumnList}
                             showsVerticalScrollIndicator={false}
                 /> 
 
                 <FlatList  data={wyvernCollection}
                             renderItem={renderItem}
                             keyExtractor={(item) => item.id}
-                            numColumns={2}
+                            numColumns={3}
                             contentContainerStyle={styles.wyvernsGrid}
-                            style={styles.TwoColumnList}
+                            //style={styles.TwoColumnList}
                             showsVerticalScrollIndicator={false}
                 />              
             </View>
@@ -233,12 +233,18 @@ const styles = StyleSheet.create({
     },
 
     drakesGrid: {
-        paddingLeft: '23%',
+        // paddingLeft: '23%',
+        // justifyContent: 'center',
+        paddingHorizontal: 20,
+        paddingLeft: 1,
         justifyContent: 'center',
     },
 
     wyvernsGrid: {
-        paddingLeft: '23%',
+        // paddingLeft: '23%',
+        // justifyContent: 'center',
+        paddingHorizontal: 20,
+        paddingLeft: 1,
         justifyContent: 'center',
     },
 
