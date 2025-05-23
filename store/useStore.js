@@ -3,8 +3,8 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { createEgg } from '../utils/createEgg';
 import creatureData from '../utils/creatureData';
 import itemData from '../utils/itemData';
+import Toast from 'react-native-toast-message';
 import { hasItem , getItem, addItemToState, updateItems} from './helpers';
-
 
 //Used to modify and store the state of a value
 const useStore = create((set, get) => ({
@@ -360,6 +360,15 @@ getCreatureBonus: (type) => {
       console.log("Time: ", now - creature.hatchedAt);
 
       if (now - creature.hatchedAt >= adjustedTime) {
+        // Show toast when baby grows up
+        Toast.show({
+          type: 'success',
+          text1: `Your ${creature.type} has grown up!`,
+          text2: `Check the Brood to view it`,
+          position: 'top',
+          visibilityTime: 5000,
+        });
+
         return {
           ...creature,
           stage: 'adult',
