@@ -155,10 +155,12 @@ const Inventory = () => {
                 <View style={styles.goldContainer}>
                     <Text style={styles.goldText}>{gold}</Text>
 
-                    <Image
-                        style={styles.gold_coin}
-                        source={require("../../assets/item sprites/coin/coin_sprite.png")}
-                    />
+                    <View style={styles.goldCoinContainer}>
+                        <Image
+                            style={styles.gold_coin}
+                            source={require("../../assets/item sprites/coin/coin_sprite.png")}
+                        />
+                    </View>
                 </View>
                 {/* Wrapper for all three FlatLists */}
                 <View style={styles.flatListsWrapper}>
@@ -243,8 +245,6 @@ const styles = StyleSheet.create({
 
     statSection: {
         flexDirection: 'row',
-        gap: 120,
-        paddingBottom: 10,
     },
 
     dragonText: {
@@ -265,9 +265,13 @@ const styles = StyleSheet.create({
     goldContainer: {
         flexDirection: 'row',
         alignItems: 'center',
-        height: '3%',
-        marginLeft: '46%',
-        marginRight: '42%',
+        height: '8%'
+    },
+
+    goldCoinContainer: {
+        width: '10%',
+        height: '34%',
+        resizeMode: 'contain',
     },
 
     goldText: {

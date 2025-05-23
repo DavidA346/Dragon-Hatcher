@@ -186,12 +186,15 @@ const Shop = () => {
 
                 {/* Gold Badge */}
                 <View style={styles.goldContainer}>
-                    <Text style={styles.goldText}>{gold}</Text>          
-                        <Image
-                            style={styles.gold_coin}
-                            source={require("../../assets/item sprites/coin/coin_sprite.png")}
-                        />
-                    </View>
+                    <Text style={styles.goldText}>{gold}</Text>
+            
+                        <View style={styles.goldCoinContainer}>
+                            <Image
+                                style={styles.gold_coin}
+                                source={require("../../assets/item sprites/coin/coin_sprite.png")}
+                            />
+                        </View>
+                </View>
                 
                     <View style={styles.scrollContainer}>
                         <FlatList
@@ -254,8 +257,13 @@ const styles = StyleSheet.create({
     goldContainer: {
         flexDirection: 'row',
         alignItems: 'center',
-        marginLeft: '47%',
-        marginRight: '40%',
+        height: '8%'
+    },
+
+    goldCoinContainer: {
+        width: '10%',
+        height: '34%',
+        resizeMode: 'contain',
     },
 
     goldText: {
@@ -326,7 +334,7 @@ const styles = StyleSheet.create({
     },
 
     scrollContainer: {
-        height: '71%',
+        height: '67%',
         width: '100%',
         paddingHorizontal: '3%',
     },
