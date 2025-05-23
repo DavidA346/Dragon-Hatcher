@@ -199,6 +199,7 @@ const Inventory = () => {
   );
 };
 
+
 export default Inventory;
 
 const styles = StyleSheet.create({
