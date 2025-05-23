@@ -99,25 +99,8 @@ loadItems: async () => {
   return item?.bonusClicks || 0;
 },
 
- getTotemEffects: (target) => {
+getTotemEffects: (target) => {
   const { items, creatureInventory } = get();
-
-  if(!target || !target.type) return {};
-
-  const species = target.type;
-  const totemId = species?.toLowerCase();
-  if (!items.totems.includes(totemId)) return {}; // Check if totem is owned
-
-  const totem = itemData.totems[totemId];
-  const requiredCount = totem?.requirements?.count || 0;
-
-  const ownedCount = creatureInventory.filter(
-    c => c.type === species
-  ).length;
-
-  if (ownedCount >= requiredCount) {
-    return totem.effects;
-  }
 
   const effects = {
     clickBonus: 0,
@@ -125,8 +108,26 @@ loadItems: async () => {
     growTimeMultiplier: 1,
   };
 
+  if (!target || !target.type) return effects;
+
+  const species = target.type;
+  const totemId = species.toLowerCase();
+  if (!items.totems.includes(totemId)) return effects;
+
+  const totem = itemData.totems[totemId];
+  const requiredCount = totem?.requirements?.count || 0;
+
+  const ownedCount = creatureInventory.filter(
+    c => c.type === species && c.stage === 'adult'
+  ).length;
+
+  if (ownedCount >= requiredCount) {
+    return totem.effects;
+  }
+
   return effects;
 },
+
 
 getScrollEffect: (type) => {
   const scroll = get().getEquippedScroll(type);
@@ -269,6 +270,8 @@ getCreatureBonus: (type) => {
       const creatureScrollEffect = get().getScrollEffect(type) ?? 0;
       const scrollBonus = goldScrollEffect + creatureScrollEffect;
       const bonusGold = totemEffects?.goldBonus || 0;
+      console.log(`Totem bonus for ${type}: +${bonusGold} gold`);
+
       const goldMult = get().getScrollMultiplier('gold')?? 1;
       const goldMult2 = get().getScrollMultiplier(type)?? 1;
       const scrollMult = goldMult * goldMult2;
