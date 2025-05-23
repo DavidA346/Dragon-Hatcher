@@ -1,128 +1,150 @@
 import { StyleSheet, Text, View, ImageBackground, Image, FlatList, Pressable } from "react-native"
 import useStore from "../../store/useStore";
 import * as Haptics from 'expo-haptics';
+//import { type } from "@testing-library/react-native/build/user-event/type";
 
 //Items to display to the screen
 const shopItems = [
-    {
-        id: '1',
-        name: 'The Hammer of Yur',
-        price: 100,
-        info: 'Hits eggs.',
-        description: '+1 every click.',
-        gold_icon: require('../../assets/item sprites/coin/coin_sprite.png'),
-        icon: require('../../assets/item sprites/hammers/woodenHammer_sprite.png'),
-    },
+  {
+    id: '1',
+    category: 'hammers',
+    itemId: 'yur',
+    name: 'The Hammer of Yur',
+    price: 100,
+    info: 'Hits eggs.',
+    description: '+2 every click.',
+    gold_icon: require('../../assets/item sprites/coin/coin_sprite.png'),
+    icon: require('../../assets/item sprites/hammers/woodenHammer_sprite.png'),
+  },
+  {
+    id: '2',
+    category: 'hammers',
+    itemId: 'tou',
+    name: 'The Hammer of Tou',
+    price: 500,
+    info: 'Hits eggs hard.',
+    description: '+5 every click.',
+    gold_icon: require('../../assets/item sprites/coin/coin_sprite.png'),
+    icon: require('../../assets/item sprites/hammers/ironHammer_sprite.png'),
+  },
+  {
+    id: '3',
+    category: 'hammers',
+    itemId: 'gude',
+    name: 'The Hammer of Gude',
+    price: 1000,
+    info: 'Hits eggs harder.',
+    description: '+10 every click.',
+    gold_icon: require('../../assets/item sprites/coin/coin_sprite.png'),
+    icon: require('../../assets/item sprites/hammers/goldHammer_sprite.png'),
+  },
 
-    {
-        id: '2',
-        name: 'The Hammer of Tou',
-        price: 500,
-        info: 'Hits eggs hard.',
-        description: '+5 every click.',
-        gold_icon: require('../../assets/item sprites/coin/coin_sprite.png'),
-        icon: require('../../assets/item sprites/hammers/ironHammer_sprite.png'),
-    },
+  {
+    id: '4',
+    category: 'scrolls',
+    itemId: 'dragon1',
+    type: 'dragon',
+    name: 'Brywyn’s Scroll',
+    price: 2100,
+    info: 'Describes Dragons.',
+    description: 'Increases gold from dragons.',
+    gold_icon: require('../../assets/item sprites/coin/coin_sprite.png'),
+    icon: require('../../assets/item sprites/scrolls/dragon scroll/dragonscroll_sprite.png'),
+  },
+  {
+    id: '5',
+    category: 'scrolls',
+    itemId: 'drake1',
+    type: 'drake',
+    name: 'Anpero’s Scroll',
+    price: 1300,
+    info: 'Describes Drakes.',
+    description: 'Increases gold from drakes.',
+    gold_icon: require('../../assets/item sprites/coin/coin_sprite.png'),
+    icon: require('../../assets/item sprites/scrolls/drake scroll/drakescroll_sprite.png'),
+  },
+  {
+    id: '6',
+    category: 'scrolls',
+    itemId: 'wyvern1',
+    type: 'wyvern',
+    name: 'Arostiv’s Scroll',
+    price: 800,
+    info: 'Describes Wyverns.',
+    description: 'Increases gold from wyverns.',
+    gold_icon: require('../../assets/item sprites/coin/coin_sprite.png'),
+    icon: require('../../assets/item sprites/scrolls/wyvern scroll/wyvernscroll_sprite.png'),
+  },
+  {
+    id: '7',
+    category: 'scrolls',
+    itemId: 'gold1',
+    type: 'gold',
+    name: 'Danask’s Scroll',
+    price: 800,
+    info: 'Describes Gold.',
+    description: '+1 gold per click.',
+    gold_icon: require('../../assets/item sprites/coin/coin_sprite.png'),
+    icon: require('../../assets/item sprites/scrolls/coin scroll/coinscroll_sprite.png'),
+  },
+  {
+    id: '8',
+    category: 'scrolls',
+    itemId: 'egg1',
+    type: 'egg',
+    name: 'Jothur’s Scroll',
+    price: 500,
+    info: 'Describes Eggs.',
+    description: 'Faster hatching.',
+    gold_icon: require('../../assets/item sprites/coin/coin_sprite.png'),
+    icon: require('../../assets/item sprites/scrolls/egg scroll/eggscroll_sprite.png'),
+  },
 
-    {
-        id: '3',
-        name: 'The Hammer of Gude',
-        price: 1000,
-        info: 'Hits eggs harder.',
-        description: '+10 every click.',
-        gold_icon: require('../../assets/item sprites/coin/coin_sprite.png'),
-        icon: require('../../assets/item sprites/hammers/goldHammer_sprite.png'),
-    },
+  {
+    id: '9',
+    category: 'totems',
+    itemId: 'dragon',
+    name: 'Totem of Sef Enna',
+    price: 5000,
+    info: 'Inspires Dragons.',
+    description: '+100 gold per click once you have all dragons.',
+    gold_icon: require('../../assets/item sprites/coin/coin_sprite.png'),
+    icon: require('../../assets/item sprites/totems/dragon_totem.png'),
+  },
+  {
+    id: '10',
+    category: 'totems',
+    itemId: 'drake',
+    name: 'Totem of Rac Nivt',
+    price: 5000,
+    info: 'Inspires Drakes.',
+    description: '+100 gold per click once you have all drakes.',
+    gold_icon: require('../../assets/item sprites/coin/coin_sprite.png'),
+    icon: require('../../assets/item sprites/totems/drake_totem.png'),
+  },
+  {
+    id: '11',
+    category: 'totems',
+    itemId: 'wyvern',
+    name: 'Totem of Ga Hib',
+    price: 5000,
+    info: 'Inspires Wyverns.',
+    description: '+100 gold per click once you have all wyverns.',
+    gold_icon: require('../../assets/item sprites/coin/coin_sprite.png'),
+    icon: require('../../assets/item sprites/totems/wyvern_totem.png'),
+  },
 
-    {
-        id: '4',
-        name: 'Brywyn\’s Scroll',
-        price: 2100,
-        info: 'Describes Dragons.',
-        description: 'Increases gold earned from Adult-dragons.',
-        gold_icon: require('../../assets/item sprites/coin/coin_sprite.png'),
-        icon: require('../../assets/item sprites/scrolls/dragon scroll/dragonscroll_sprite.png'),
-    },
-
-    {
-        id: '5',
-        name: 'Anpero\’s Scroll',
-        price: 1300,
-        info: 'Describes Drakes.',
-        description: 'Increases gold earned from Adult-drakes.',
-        gold_icon: require('../../assets/item sprites/coin/coin_sprite.png'),
-        icon: require('../../assets/item sprites/scrolls/drake scroll/drakescroll_sprite.png'),
-    },
-
-    {
-        id: '6',
-        name: 'Arostiv\’s Scroll',
-        price: 800,
-        info: 'Describes Wyverns.',
-        description: 'Increases gold earned from Adult-wyverns.',
-        gold_icon: require('../../assets/item sprites/coin/coin_sprite.png'),
-        icon: require('../../assets/item sprites/scrolls/wyvern scroll/wyvernscroll_sprite.png'),
-    },
-
-    {
-        id: '7',
-        name: 'Danask\’s Scroll',
-        price: 800,
-        info: 'Describes gold.',
-        description: '+1 gold for every click.',
-        gold_icon: require('../../assets/item sprites/coin/coin_sprite.png'),
-        icon: require('../../assets/item sprites/scrolls/coin scroll/coinscroll_sprite.png'),
-    },
-
-    {
-        id: '8',
-        name: 'Jothur\’s Scroll',
-        price: 500,
-        info: 'Describes eggs.',
-        description: 'Faster hatching rate for eggs.',
-        gold_icon: require('../../assets/item sprites/coin/coin_sprite.png'),
-        icon: require('../../assets/item sprites/scrolls/egg scroll/eggscroll_sprite.png'),
-    },
-
-    {
-        id: '9',
-        name: 'Totem of Sef Enna',
-        price: 5000,
-        info: 'Inspires all dragons.',
-        description: '+100 gold for every click after collecting all dragons',
-        gold_icon: require('../../assets/item sprites/coin/coin_sprite.png'),
-        icon: require('../../assets/item sprites/totems/dragon_totem.png'),
-    },
-
-    {
-        id: '10',
-        name: 'Totem of Rac Nivt',
-        price: 5000,
-        info: 'Inspires all drakes.',
-        description: '+100 gold for every click after collecting all drakes',
-        gold_icon: require('../../assets/item sprites/coin/coin_sprite.png'),
-        icon: require('../../assets/item sprites/totems/drake_totem.png'),
-    },
-
-    {
-        id: '11',
-        name: 'Totem of Ga Hib',
-        price: 5000,
-        info: 'Inspires all wyverns.',
-        description: '+100 gold for every click after collecting all wyverns',
-        gold_icon: require('../../assets/item sprites/coin/coin_sprite.png'),
-        icon: require('../../assets/item sprites/totems/wyvern_totem.png'),
-    },
-
-    {
-        id: '12',
-        name: 'Mana Potion',
-        price: 300,
-        info: 'Enhances hands.',
-        description: 'Automatically clicks eggs by +1 every 3s',
-        gold_icon: require('../../assets/item sprites/coin/coin_sprite.png'),
-        icon: require('../../assets/item sprites/potions/mana1_sprite.png'),
-    },
+  {
+    id: '12',
+    category: 'potions',
+    itemId: 'potion1',
+    name: 'Mana Potion',
+    price: 300,
+    info: 'Enhances Hands.',
+    description: '+1 auto-click every 3s.',
+    gold_icon: require('../../assets/item sprites/coin/coin_sprite.png'),
+    icon: require('../../assets/item sprites/potions/mana1_sprite.png'),
+  },
 ];
 
 
@@ -173,8 +195,8 @@ const Shop = () => {
                                 ]}
                                 onPress={() => {
                                     triggerHapticFeedback();
-                                    purchaseItem('scrolls', 'wyvern2', 'wyvern');
-                                    console.log(`Pressed: ${item.name}`);
+                                    purchaseItem(item.category, item.itemId, item.type ?? null);
+                                    console.log(`Buying: ${item.name}`, item.category, item.itemId, item.type);
                                 }}
                                 >
                                 <Image source={item.icon} style={styles.itemIcon} />

@@ -183,12 +183,14 @@ const itemData = {
     },
     potions: [
         {
+          id: 'potion1',
           image: require('../assets/item sprites/potions/mana1_sprite.png'),
           name: 'Mana Potion I',
           description: 'Enhances hands. Automatically +1 clicks Eggs every 3s.',
           cost: 300,
         },
         {
+          id: 'potion2', 
           image: require('../assets/item sprites/potions/mana1_sprite.png'),
           name: 'Mana Potion II',
           description: 'Enhances hands more. Automatically clicks Adults every 3s.',

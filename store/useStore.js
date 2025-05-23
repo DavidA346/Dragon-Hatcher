@@ -21,7 +21,8 @@ const useStore = create((set, get) => ({
  items: {
   hammers: [],
   totems: [],
-  scrolls: []
+  scrolls: [],
+  potions: []
  },
 
  /*FUNCTIONS*/
@@ -397,7 +398,8 @@ getCreatureBonus: (type) => {
      items: {
       hammers: [],
       totems: [],
-      scrolls: []
+      scrolls: [],
+      potions: []
      }
    });
    get().saveCurrency(0);
@@ -408,7 +410,8 @@ getCreatureBonus: (type) => {
    get().saveItems({
     hammers: [],
     totems: [],
-    scrolls: []
+    scrolls: [],
+    potions: [] 
     });
  },
 
@@ -416,6 +419,14 @@ getCreatureBonus: (type) => {
  initializeStore: async () => {
    await get().loadCurrency();
    await get().loadGold();      // new gold balance
+
+  if (__DEV__){
+    const devGold = 15000; 
+    set({ gold: devGold });
+    await get().saveGold(devGold);
+    console.info('[DEV] seeded gold: ${devGold}');
+  }
+
    await get().loadHatchedEggs();
    await get().loadCurrentEgg();
    await get().loadInventory();

@@ -12,7 +12,7 @@ export const hasItem = (stateItems, category, id, type = null) => {
 }
 
 //return item
-export const getItem = (category, id, type = null) => {
+export const getItem = (category, id, type) => {
   if (category === 'scrolls') {
     if (!type || !itemData[category][type]) return null;
     return itemData[category][type].find(item => item.id === id);
