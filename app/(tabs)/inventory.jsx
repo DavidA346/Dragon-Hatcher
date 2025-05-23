@@ -1,13 +1,4 @@
-import {
-  StyleSheet,
-  Text,
-  View,
-  ImageBackground,
-  Image,
-  FlatList,
-  Pressable,
-  Animated,
-} from "react-native";
+import { StyleSheet, Text, View, ImageBackground, Image, FlatList, Pressable, Animated} from "react-native";
 import useStore from "../../store/useStore";
 import * as Haptics from "expo-haptics";
 import React, { useRef, useEffect, useState } from "react";
@@ -167,7 +158,7 @@ const Inventory = () => {
                 source={require("../../assets/item sprites/coin/coin_sprite.png")}
               />
             </View>
-        `</View>
+        </View>
 
         <View style={styles.flatListsWrapper}>
           <FlatList
