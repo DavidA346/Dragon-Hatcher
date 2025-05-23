@@ -28,11 +28,22 @@ const useStore = create((set, get) => ({
  /*FUNCTIONS*/
 
  //item functionality
-getEquippedHammer: () => {
+ getEquippedHammer: () => {
   const hammers = get().items.hammers;
   if (!hammers || hammers.length === 0) return null;
-  return hammers[hammers.length - 1]; // assume last one is active
+
+  // Find the hammer with the highest bonusClicks
+  return hammers.reduce((best, id) => {
+    const current = itemData.hammers[id];
+    const bestItem = itemData.hammers[best];
+
+    if (!bestItem || (current?.bonusClicks ?? 0) > (bestItem?.bonusClicks ?? 0)) {
+      return id;
+    }
+    return best;
+  }, null);
 },
+
 
 getEquippedScroll: (type) => {
   const scrolls = get().items.scrolls?.[type];
@@ -91,13 +102,11 @@ loadItems: async () => {
  },
 
  getHammerBonusClicks: () => {
-  const items = get().items.hammers;
-  if (!items.length) return 0;
-
-  const lastHammerId = items[items.length - 1];
-  const item = itemData.hammers[lastHammerId];
+  const bestHammerId = get().getEquippedHammer();
+  const item = itemData.hammers[bestHammerId];
   return item?.bonusClicks || 0;
 },
+
 
 getTotemEffects: (target) => {
   const { items, creatureInventory } = get();
