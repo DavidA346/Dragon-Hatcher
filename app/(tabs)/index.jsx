@@ -149,7 +149,7 @@ const EggClicker = () => {
                ]}
              />
              <Text style={styles.progressBarText}>
-               {egg.progress} / {egg.clicksNeeded}
+               {egg.progress} / {Math.round(egg.clicksNeeded * (1-boost))}
              </Text>
            </View>
          )}

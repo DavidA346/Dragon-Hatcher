@@ -1,317 +1,248 @@
-import { StyleSheet, Text, View, ImageBackground, Image, FlatList, Pressable, Animated } from "react-native"
+import {
+  StyleSheet,
+  Text,
+  View,
+  ImageBackground,
+  Image,
+  FlatList,
+  Pressable,
+  Animated,
+} from "react-native";
 import useStore from "../../store/useStore";
-import * as Haptics from 'expo-haptics'; 
-import React, { useRef, useEffect } from "react";
+import * as Haptics from "expo-haptics";
+import React, { useRef, useEffect, useState } from "react";
 
-//To allow for +1 on each dragon
-const CreatureCard = ({ item, onPress }) => {
-    //Controls opacity of the +1, starts at 0 as it is hidden until pressed
-    //const goldBonus = useStore.getState().getScrollEffect('gold');
-    //const goldMultBonus = useStore.getState().getScrollMultiplier('gold');
-    const gold = useStore(state => state.gold);
-    //const goldEffect = (1 + goldBonus) * goldMultBonus;
+const CreatureCard = ({ item, onPress, goldEarned }) => {
+  const plusOneOpacity = useRef(new Animated.Value(0)).current;
+  const plusOneY = useRef(new Animated.Value(0)).current;
+  const [earnedAmount, setEarnedAmount] = useState(0);
 
-    const plusOneOpacity = useRef(new Animated.Value(0)).current;
-    //Controls the y position of the +1 and moves upward when pressed, also starts as 0
-    const plusOneY = useRef(new Animated.Value(0)).current;
+  const triggerPlusOneAnimation = (amount) => {
+    setEarnedAmount(amount);
+    plusOneOpacity.setValue(1);
+    plusOneY.setValue(0);
 
-    //Triggers +1 animation
-    const triggerPlusOneAnimation = () => {
-        plusOneOpacity.setValue(1); //Sets the +1 to 1 to make it visible
-        plusOneY.setValue(0); //Resets the y value for each subsequent press
-    
-        //Parallel is needed to allow for these two animations to run at the same time
-        Animated.parallel([
-            //Fades the +1 out over 500ms
-            Animated.timing(plusOneOpacity, {
-                toValue: 0,
-                duration: 500,
-                useNativeDriver: true,
-             }),
-            //Moves the +1 up the screen over 500ms
-            Animated.timing(plusOneY, {
-                toValue: -80,
-                duration: 500,
-                useNativeDriver: true,
-             }),
-        ]).start();
-    };
+    Animated.parallel([
+      Animated.timing(plusOneOpacity, {
+        toValue: 0,
+        duration: 500,
+        useNativeDriver: true,
+      }),
+      Animated.timing(plusOneY, {
+        toValue: -80,
+        duration: 500,
+        useNativeDriver: true,
+      }),
+    ]).start();
+  };
 
-    useEffect(() => {
-        const interval = setInterval(() => {
-          useStore.getState().growBabiesToAdults();
-        }, 5000); // every 5 seconds
-      
-        return () => clearInterval(interval);
-      }, []);      
+  useEffect(() => {
+    const interval = setInterval(() => {
+      useStore.getState().growBabiesToAdults();
+    }, 5000);
+    return () => clearInterval(interval);
+  }, []);
 
-    //Triggers the press if it is an adult
-    const handlePress = () => {
-        onPress();
-        if (item.stage === 'adult') {
-            triggerPlusOneAnimation();
-        }
-    };
+  const handlePress = () => {
+    onPress();
+    if (item.stage === "adult") {
+      triggerPlusOneAnimation(goldEarned);
+    }
+  };
 
-    return (
-        <Pressable
-            onPress={handlePress}
-            style={({ pressed }) => [
-                styles.card,
-                {
-                    //Changes the cards color and opacity when pressed
-                    backgroundColor: pressed ? 'white' : '#cad0d0',
-                    opacity: pressed ? 1 : 0.8,
-                },
-            ]}
-        >
-            <View style={styles.card}>
-                <Image source={item.image} style={styles.image} />
-                <Animated.View
-    style={[
-        styles.plusOneContainer,
+  return (
+    <Pressable
+      onPress={handlePress}
+      style={({ pressed }) => [
+        styles.card,
         {
-            opacity: plusOneOpacity,
-            transform: [{ translateY: plusOneY }],
+          backgroundColor: pressed ? "white" : "#cad0d0",
+          opacity: pressed ? 1 : 0.8,
         },
-    ]}
->
-    <Text style={styles.plusOneText}>+1</Text>
-    <Image
-        style={styles.coin}
-        source={require("../../assets/item sprites/coin/coin_sprite.png")}
-    />
-</Animated.View>
-
-            </View>
-        </Pressable>
-    );
+      ]}
+    >
+      <View style={styles.card}>
+        <Image source={item.image} style={styles.image} />
+        <Animated.View
+          style={[
+            styles.plusOneContainer,
+            {
+              opacity: plusOneOpacity,
+              transform: [{ translateY: plusOneY }],
+            },
+          ]}
+        >
+          <Text style={styles.plusOneText}>+{earnedAmount}</Text>
+          <Image
+            style={styles.coin}
+            source={require("../../assets/item sprites/coin/coin_sprite.png")}
+          />
+        </Animated.View>
+      </View>
+    </Pressable>
+  );
 };
 
 const Inventory = () => {
-    const creatureInventory = useStore(state => state.creatureInventory);
-    // gold balance & click‐to‐earn
-    const gold = useStore(state => state.gold);
-    const incrementGold = useStore(state => state.incrementGold);
+  const creatureInventory = useStore((state) => state.creatureInventory);
+  const gold = useStore((state) => state.gold);
+  const incrementGold = useStore((state) => state.incrementGold);
+  const getScrollEffect = useStore((state) => state.getScrollEffect);
+  const getScrollMultiplier = useStore((state) => state.getScrollMultiplier);
+  const getTotemEffects = useStore((state) => state.getTotemEffects);
 
-    const dragonCollection = creatureInventory.filter(
-        (creature) => creature.type === 'Dragon'
-    );
-        
-    const drakeCollection = creatureInventory.filter(
-        (creature) => creature.type === 'Drake'
-    );
-        
-    const wyvernCollection = creatureInventory.filter(
-        (creature) => creature.type === 'Wyvern'
-    );
+  const triggerHapticFeedback = () => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+  };
 
-    //Function to trigger haptic feedback
-    const triggerHapticFeedback = () => {
-        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-    };
+  const calculateGoldEarned = (creature) => {
+    const type = creature.type.toLowerCase();
+    const totemEffects = getTotemEffects(creature);
+    const goldScrollEffect = getScrollEffect("gold") ?? 0;
+    const creatureScrollEffect = getScrollEffect(type) ?? 0;
+    const scrollBonus = goldScrollEffect + creatureScrollEffect;
+    const bonusGold = totemEffects?.goldBonus || 0;
+    const goldMult = getScrollMultiplier("gold") ?? 1;
+    const goldMult2 = getScrollMultiplier(type) ?? 1;
+    const scrollMult = goldMult * goldMult2;
+    return (1 + bonusGold + scrollBonus) * scrollMult;
+  };
 
-    //Renders the dragons to the screen
-    const renderItem = ({ item }) => (
-        <CreatureCard
-            item={item}
-            onPress={() => {
-                triggerHapticFeedback();
-                //only adults can increment gold
-                if(item.stage === 'adult') {
-                    incrementGold(item);
-                }
-            }}
-        />
-    );
+  const renderItem = ({ item }) => {
+    const goldEarned = item.stage === "adult" ? calculateGoldEarned(item) : 0;
 
     return (
-        //Shows the image as the background for the screen
-        <ImageBackground
-            source={require('../../assets/backgrounds/collection_background.png')}
-            style={styles.backgroundImage}
-        >
-            <View style={styles.container}>
-                <View>
-                    {/* Displays the BROOD image to the screen */}
-                    <Image
-                        source={require('../../assets/titles/Brood_text.png')}
-                        style={styles.title}
-                    >
-                    </Image>
-                </View>
+      <CreatureCard
+        item={item}
+        goldEarned={goldEarned}
+        onPress={() => {
+          triggerHapticFeedback();
+          if (item.stage === "adult") {
+            incrementGold(item);
+          }
+        }}
+      />
+    );
+  };
 
-                {/* Displays the top section to the screen */}
-                <View style={styles.statSection}>
-                    <View>
-                        <Text style={styles.stats}>Totals</Text>
-                        <Text style={styles.dragonText}>Dragons: {dragonCollection.length}/6</Text>
-                        <Text style={styles.drakesText}>Drakes: {drakeCollection.length}/3</Text>
-                        <Text style={styles.wyvernsText}>Wyverns: {wyvernCollection.length}/3</Text>
-                    </View>
-                </View>
+  const dragonCollection = creatureInventory.filter((c) => c.type === "Dragon");
+  const drakeCollection = creatureInventory.filter((c) => c.type === "Drake");
+  const wyvernCollection = creatureInventory.filter((c) => c.type === "Wyvern");
 
-                {/* Gold Badge */}
-                <View style={styles.goldContainer}>
-                    <Text style={styles.goldText}>{gold}</Text>
+  return (
+    <ImageBackground
+      source={require("../../assets/backgrounds/collection_background.png")}
+      style={styles.backgroundImage}
+    >
+      <View style={styles.container}>
+        <View>
+          <Image
+            source={require("../../assets/titles/Brood_text.png")}
+            style={styles.title}
+          />
+        </View>
 
-                    <View style={styles.goldCoinContainer}>
-                        <Image
-                            style={styles.gold_coin}
-                            source={require("../../assets/item sprites/coin/coin_sprite.png")}
-                        />
-                    </View>
-                </View>
-                {/* Wrapper for all three FlatLists */}
-                <View style={styles.flatListsWrapper}>
+        <View style={styles.statSection}>
+          <View>
+            <Text style={styles.stats}>Totals</Text>
+            <Text style={styles.dragonText}>
+              Dragons: {dragonCollection.length}/6
+            </Text>
+            <Text style={styles.drakesText}>
+              Drakes: {drakeCollection.length}/3
+            </Text>
+            <Text style={styles.wyvernsText}>
+              Wyverns: {wyvernCollection.length}/3
+            </Text>
+          </View>
+        </View>
 
-                    <FlatList
-                        data={dragonCollection}
-                        renderItem={renderItem}
-                        keyExtractor={item => item.id}
-                        numColumns={3}
-                        contentContainerStyle={styles.flatListContent}
-                        showsVerticalScrollIndicator={false}
-                        style={styles.flatList}
-                    />
+        <View style={styles.goldContainer}>
+          <Text style={styles.goldText}>{gold}</Text>
+          <Image
+            style={styles.gold_coin}
+            source={require("../../assets/item sprites/coin/coin_sprite.png")}
+          />
+        </View>
 
-                    <FlatList
-                        data={drakeCollection}
-                        renderItem={renderItem}
-                        keyExtractor={item => item.id}
-                        numColumns={3}
-                        contentContainerStyle={styles.flatListContent}
-                        showsVerticalScrollIndicator={false}
-                        style={styles.flatList}
-                    />
+        <View style={styles.flatListsWrapper}>
+          <FlatList
+            data={dragonCollection}
+            renderItem={renderItem}
+            keyExtractor={(item) => item.id}
+            numColumns={3}
+            contentContainerStyle={styles.flatListContent}
+            showsVerticalScrollIndicator={false}
+            style={styles.flatList}
+          />
+          <FlatList
+            data={drakeCollection}
+            renderItem={renderItem}
+            keyExtractor={(item) => item.id}
+            numColumns={3}
+            contentContainerStyle={styles.flatListContent}
+            showsVerticalScrollIndicator={false}
+            style={styles.flatList}
+          />
+          <FlatList
+            data={wyvernCollection}
+            renderItem={renderItem}
+            keyExtractor={(item) => item.id}
+            numColumns={3}
+            contentContainerStyle={styles.flatListContent}
+            showsVerticalScrollIndicator={false}
+            style={styles.flatListLast}
+          />
+        </View>
+      </View>
+    </ImageBackground>
+  );
+};
 
-                    <FlatList
-                        data={wyvernCollection}
-                        renderItem={renderItem}
-                        keyExtractor={item => item.id}
-                        numColumns={3}
-                        contentContainerStyle={styles.flatListContent}
-                        showsVerticalScrollIndicator={false}
-                        style={styles.flatListLast}
-                    />
-                </View>       
-            </View>
-        </ImageBackground>
-    )
-}
 
-export default Inventory
+export default Inventory;
 
-//Styling for all the components above
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        alignItems: 'center',
-        justifyContent: 'flex-start',
-    },
-
-    backgroundImage: {
-        flex: 1,
-        resizeMode: 'stretch',
-    },
-
-    title: {
-        width: 150,
-        resizeMode: 'contain',
-        paddingTop: 50,
-    },
-
-    card: {
-        borderRadius: 20,
-        margin: 8,
-        width: 120,
-        alignItems: 'center',
-        justifyContent: 'center',
-        paddingRight: 10
-      },
-
-    image: {
-        width: 100,
-        height: 100,
-        marginLeft: '25%'
-    },
-
-    stats: {
-        fontWeight: 'bold',
-        textDecorationLine: 'underline',
-        fontSize: 18,
-        justifyContent: 'center'
-    },
-
-    statSection: {
-        flexDirection: 'row',
-    },
-
-    dragonText: {
-        fontSize: 18,
-        fontWeight: 'bold',
-    },
-
-    drakesText: {
-        fontSize: 18,
-        fontWeight: 'bold',
-    },
-
-    wyvernsText: {
-        fontSize: 18,
-        fontWeight: 'bold',
-    },
-
-    goldContainer: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        height: '8%'
-    },
-
-    goldCoinContainer: {
-        width: '10%',
-        height: '34%',
-        resizeMode: 'contain',
-    },
-
-    goldText: {
-        fontSize: 27, 
-        fontWeight: 'bold',
-        color: 'black',
-    },
-
-    gold_coin: {
-        width: '100%',
-        height: '100%',
-        resizeMode: 'contain',
-    },
-
-    plusOneContainer: {
-        position: 'absolute',
-        top: '35%',
-        left: '20%',
-        flexDirection: 'row',
-        alignItems: 'center',
-    },    
-
-    plusOneText: {
-        fontSize: 40,
-        fontWeight: 'bold',
-        color: 'black',
-    },
-    
-    coin: {
-        width: '60%',
-        height: '60%',
-        resizeMode: 'contain',
-    },
-
-    flatListsWrapper: {
-        width: '100%',
-        alignItems: 'center',
-    },
-
-    flatList: {
-        marginBottom: '1%',
-    },
+  container: { flex: 1, alignItems: "center", justifyContent: "flex-start" },
+  backgroundImage: { flex: 1, resizeMode: "stretch" },
+  title: { width: 150, resizeMode: "contain", paddingTop: 50 },
+  card: {
+    borderRadius: 20,
+    margin: 8,
+    width: 120,
+    alignItems: "center",
+    justifyContent: "center",
+    paddingRight: 10,
+  },
+  image: { width: 100, height: 100, marginLeft: "25%" },
+  stats: {
+    fontWeight: "bold",
+    textDecorationLine: "underline",
+    fontSize: 18,
+    justifyContent: "center",
+  },
+  statSection: { flexDirection: "row", gap: 120, paddingBottom: 10 },
+  dragonText: { fontSize: 18, fontWeight: "bold" },
+  drakesText: { fontSize: 18, fontWeight: "bold" },
+  wyvernsText: { fontSize: 18, fontWeight: "bold" },
+  goldContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    height: "3%",
+    marginLeft: "46%",
+    marginRight: "42%",
+  },
+  goldText: { fontSize: 27, fontWeight: "bold", color: "black" },
+  gold_coin: { width: "100%", height: "100%", resizeMode: "contain" },
+  plusOneContainer: {
+    position: "absolute",
+    top: "35%",
+    left: "20%",
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  plusOneText: { fontSize: 40, fontWeight: "bold", color: "black" },
+  coin: { width: "60%", height: "60%", resizeMode: "contain" },
+  flatListsWrapper: { width: "100%", alignItems: "center" },
+  flatList: { marginBottom: "1%" },
 });

@@ -261,9 +261,8 @@ getCreatureBonus: (type) => {
 
  //Increment gold (only adult creatures) and persist it
   incrementGold: async (creature, id = null) => {
-    console.log('--');
+    //console.log('--');
     set(state => {
-      console.log(get().getEquippedScrolls());
       const type = creature.type.toLowerCase();
       const totemEffects = get().getTotemEffects(creature);
       const goldScrollEffect = get().getScrollEffect('gold')?? 0;
