@@ -422,13 +422,18 @@ getCreatureBonus: (type) => {
    await get().loadCurrency();
    await get().loadGold();      // new gold balance
 
-  if (__DEV__){
-    const devGold = 15000; 
-    set({ gold: devGold });
-    await get().saveGold(devGold);
-    console.info('[DEV] seeded gold: ${devGold}');
-  }
-
+  // if (__DEV__){
+  //   // const devGold = 15000; 
+  //   // set({ gold: devGold });
+  //   // await get().saveGold(devGold);
+  //   // console.info('[DEV] seeded gold: ${devGold}');
+  //   await AsyncStorage.setItem('items', JSON.stringify({
+  //     hammers: [],
+  //     totems: [],
+  //     scrolls: [],
+  //     potions: []
+  //   }));
+  // }
    await get().loadHatchedEggs();
    await get().loadCurrentEgg();
    await get().loadInventory();
