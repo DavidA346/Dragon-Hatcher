@@ -157,13 +157,17 @@ const Inventory = () => {
           </View>
         </View>
 
+        {/* Gold Badge */}
         <View style={styles.goldContainer}>
           <Text style={styles.goldText}>{gold}</Text>
-          <Image
-            style={styles.gold_coin}
-            source={require("../../assets/item sprites/coin/coin_sprite.png")}
-          />
-        </View>
+                    
+            <View style={styles.goldCoinContainer}>
+              <Image
+                style={styles.gold_coin}
+                source={require("../../assets/item sprites/coin/coin_sprite.png")}
+              />
+            </View>
+        `</View>
 
         <View style={styles.flatListsWrapper}>
           <FlatList
@@ -203,9 +207,24 @@ const Inventory = () => {
 export default Inventory;
 
 const styles = StyleSheet.create({
-  container: { flex: 1, alignItems: "center", justifyContent: "flex-start" },
-  backgroundImage: { flex: 1, resizeMode: "stretch" },
-  title: { width: 150, resizeMode: "contain", paddingTop: 50 },
+  container: { 
+    flex: 1, 
+    alignItems: "center", 
+    justifyContent: "flex-start" 
+  },
+
+  backgroundImage: { 
+    flex: 1, 
+    resizeMode: 
+    "stretch" 
+  },
+
+  title: { 
+    width: 150, 
+    resizeMode: "contain", 
+    paddingTop: 50 
+  },
+
   card: {
     borderRadius: 20,
     margin: 8,
@@ -214,26 +233,65 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     paddingRight: 10,
   },
-  image: { width: 100, height: 100, marginLeft: "25%" },
+
+  image: { 
+    width: 100, 
+    height: 100, 
+    marginLeft: "25%" 
+  },
+
   stats: {
     fontWeight: "bold",
     textDecorationLine: "underline",
     fontSize: 18,
     justifyContent: "center",
   },
-  statSection: { flexDirection: "row", gap: 120, paddingBottom: 10 },
-  dragonText: { fontSize: 18, fontWeight: "bold" },
-  drakesText: { fontSize: 18, fontWeight: "bold" },
-  wyvernsText: { fontSize: 18, fontWeight: "bold" },
-  goldContainer: {
+
+  statSection: { 
     flexDirection: "row",
-    alignItems: "center",
-    height: "3%",
-    marginLeft: "46%",
-    marginRight: "42%",
+    gap: 120, 
+    paddingBottom: 10 
   },
-  goldText: { fontSize: 27, fontWeight: "bold", color: "black" },
-  gold_coin: { width: "100%", height: "100%", resizeMode: "contain" },
+
+  dragonText: { 
+    fontSize: 18, 
+    fontWeight: "bold" 
+  },
+
+  drakesText: { 
+    fontSize: 18, 
+    fontWeight: "bold" 
+  },
+
+  wyvernsText: { 
+    fontSize: 18, 
+    fontWeight: "bold" 
+  },
+
+  goldContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    height: '8%'
+  },
+
+  goldCoinContainer: {
+    width: '10%',
+    height: '34%',
+    resizeMode: 'contain',
+  },
+
+  goldText: {
+    fontSize: 27, 
+    fontWeight: 'bold',
+    color: 'black',
+  },
+
+  gold_coin: {
+    width: '100%',
+    height: '100%',
+    resizeMode: 'contain',
+  },
+
   plusOneContainer: {
     position: "absolute",
     top: "35%",
@@ -241,8 +299,25 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
   },
-  plusOneText: { fontSize: 40, fontWeight: "bold", color: "black" },
-  coin: { width: "60%", height: "60%", resizeMode: "contain" },
-  flatListsWrapper: { width: "100%", alignItems: "center" },
-  flatList: { marginBottom: "1%" },
+
+  plusOneText: { 
+    fontSize: 40, 
+    fontWeight: "bold", 
+    color: "black" 
+  },
+
+  coin: { 
+    width: "60%", 
+    height: "60%", 
+    resizeMode: "contain" 
+  },
+
+  flatListsWrapper: { 
+    width: "100%", 
+    alignItems: "center" 
+  },
+
+  flatList: { 
+    marginBottom: "1%" 
+  },
 });
