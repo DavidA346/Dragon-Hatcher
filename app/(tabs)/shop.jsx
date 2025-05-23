@@ -2,6 +2,8 @@ import { StyleSheet, Text, View, ImageBackground, Image, FlatList, Pressable } f
 import useStore from "../../store/useStore";
 import * as Haptics from 'expo-haptics';
 //import { type } from "@testing-library/react-native/build/user-event/type";
+import { hasItem } from '../../store/helpers';
+import Toast from 'react-native-toast-message';
 
 //Items to display to the screen
 const shopItems = [
@@ -159,10 +161,9 @@ const shopItems = [
   },
 ];
 
-
 const Shop = () => {
     const gold = useStore(state => state.gold);
-    const {purchaseItem } = useStore();
+    const { purchaseItem, items: stateItems } = useStore(); 
 
     //Function to trigger haptic feedback
     const triggerHapticFeedback = () => {
@@ -202,32 +203,62 @@ const Shop = () => {
                         keyExtractor={(item) => item.id}
                         contentContainerStyle={styles.listContainer}
                         showsVerticalScrollIndicator={false}
-                        renderItem={({ item }) => (
-                            <Pressable
-                                style={({ pressed }) => [
-                                    styles.itemContainer,
-                                    pressed && styles.itemPressed,
-                                ]}
-                                onPress={() => {
-                                    triggerHapticFeedback();
-                                    purchaseItem(item.category, item.itemId, item.type ?? null);
-                                    console.log(`Buying: ${item.name}`, item.category, item.itemId, item.type);
-                                }}
-                                >
-                                <Image source={item.icon} style={styles.itemIcon} />
-                                <View style={styles.itemTextContainer}>
-                                    <View style={styles.topSection}>
-                                        <Text style={styles.itemTitle}>{item.name} - {item.price}</Text>
-                                        <Image source={item.gold_icon} style={styles.goldItemIcon} />
-                                    </View>
-                                    <Text style={styles.itemInfo}>{item.info}</Text>
-                                    <Text style={styles.itemDescription}>{item.description}</Text>
-                                </View>
-                            </Pressable>
+                        renderItem={({ item }) => {
+                            // Check if item is owned
+                            const owned = hasItem(stateItems, item.category, item.itemId, item.type ?? null);
 
-                        )}
-                        />
-                    </View>
+                            return (
+                                <Pressable
+                                    style={({ pressed }) => [
+                                        styles.itemContainer,
+                                        pressed && !owned && styles.itemPressed,
+                                        owned && styles.disabledItemContainer // grey out if owned
+                                    ]}
+                                    onPress={() => {
+                                        if (owned) {
+                                            Toast.show({
+                                            type: 'info',
+                                            text1: `You already own ${item.name}.`,
+                                            });
+                                            return;
+                                        }
+                                        
+                                        // Popup for not enough gold
+                                        if (gold < item.price) {
+                                            Toast.show({
+                                            type: 'error',
+                                            text1: `Not enough gold!`,
+                                            });
+                                            return;
+                                        }
+
+                                        triggerHapticFeedback();
+                                        purchaseItem(item.category, item.itemId, item.type ?? null);
+                                        // Popup for not success in buying item
+                                        Toast.show({
+                                            type: 'success',
+                                            text1: `You bought ${item.name}!`,
+                                        });
+                                        console.log(`Buying: ${item.name}`, item.category, item.itemId, item.type);
+                                    }}
+                                    disabled={owned} // disable press if owned
+                                >
+                                    <Image source={item.icon} style={styles.itemIcon} />
+                                    <View style={styles.itemTextContainer}>
+                                        <View style={styles.topSection}>
+                                            <Text style={[styles.itemTitle, owned && styles.ownedText]}>
+                                                {item.name} - {item.price}
+                                            </Text>
+                                            <Image source={item.gold_icon} style={styles.goldItemIcon} />
+                                        </View>
+                                        <Text style={[styles.itemInfo, owned && styles.ownedText]}>{item.info}</Text>
+                                        <Text style={[styles.itemDescription, owned && styles.ownedText]}>{item.description}</Text>
+                                    </View>
+                                </Pressable>
+                            );
+                        }}
+                    />
+                </View>
             </View>
         </ImageBackground>
     )
@@ -248,10 +279,6 @@ const styles = StyleSheet.create({
     title: {
         width: 150,
         resizeMode: 'contain',
-    },
-    
-    title_container: {
-        paddingTop: '6%',
     },
 
     goldContainer: {
@@ -341,5 +368,14 @@ const styles = StyleSheet.create({
 
     itemPressed: {
         backgroundColor: 'white',
+    },
+
+    disabledItemContainer: {
+        backgroundColor: '#ddd',
+        opacity: 0.6,
+    },
+
+    ownedText: {
+        color: '#666',
     },
 })

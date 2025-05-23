@@ -10,6 +10,14 @@ const toastConfig = {
       {text2 ? <Text style={styles.toastMessage}>{text2}</Text> : null}
     </View>
   ),
+
+  // Styling for error popup
+  error: ({ text1, text2 }) => (
+    <View style={styles.customToast2}>
+      <Text style={styles.toastTitle2}>{text1}</Text>
+      {text2 ? <Text style={styles.toastMessage2}>{text2}</Text> : null}
+    </View>
+  ),
 };
 
 const RootLayout = () => {
@@ -43,6 +51,7 @@ const styles = StyleSheet.create({
     shadowColor: 'black',
     shadowOpacity: 0.3,
     shadowRadius: 10,
+    justifyContent: 'center'
   },
 
   toastTitle: {
@@ -54,6 +63,34 @@ const styles = StyleSheet.create({
   },
 
   toastMessage: {
+    color: 'black',
+    fontWeight: 'bold',
+    fontSize: 16,
+    marginTop: '1%',
+    alignSelf: 'center'
+  },
+
+  customToast2: {
+    height: '50%',
+    width: '90%',
+    backgroundColor: 'red',
+    borderRadius: 10,
+    marginTop: '32%',
+    shadowColor: 'black',
+    shadowOpacity: 0.3,
+    shadowRadius: 10,
+    justifyContent: 'center'
+  },
+
+  toastTitle2: {
+    color: 'black',
+    fontWeight: 'bold',
+    fontSize: 20,
+    alignSelf: 'center',
+    textAlign: 'center'
+  },
+
+  toastMessage2: {
     color: 'black',
     fontWeight: 'bold',
     fontSize: 16,
