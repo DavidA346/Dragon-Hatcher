@@ -160,33 +160,39 @@ const Inventory = () => {
                         source={require("../../assets/item sprites/coin/coin_sprite.png")}
                     />
                 </View>
+                {/* Wrapper for all three FlatLists */}
+                <View style={styles.flatListsWrapper}>
 
-                 {/* Displays the dragon card lists to the screen */}
-                 <FlatList  data={dragonCollection}
-                            renderItem={renderItem}
-                            keyExtractor={(item) => item.id}
-                            numColumns={3}
-                            contentContainerStyle={styles.dragonsGrid}
-                            showsVerticalScrollIndicator={false}
-                />
+                    <FlatList
+                        data={dragonCollection}
+                        renderItem={renderItem}
+                        keyExtractor={item => item.id}
+                        numColumns={3}
+                        contentContainerStyle={styles.flatListContent}
+                        showsVerticalScrollIndicator={false}
+                        style={styles.flatList}
+                    />
 
-                <FlatList  data={drakeCollection}
-                            renderItem={renderItem}
-                            keyExtractor={(item) => item.id}
-                            numColumns={3}
-                            contentContainerStyle={styles.drakesGrid}
-                            //style={styles.TwoColumnList}
-                            showsVerticalScrollIndicator={false}
-                /> 
+                    <FlatList
+                        data={drakeCollection}
+                        renderItem={renderItem}
+                        keyExtractor={item => item.id}
+                        numColumns={3}
+                        contentContainerStyle={styles.flatListContent}
+                        showsVerticalScrollIndicator={false}
+                        style={styles.flatList}
+                    />
 
-                <FlatList  data={wyvernCollection}
-                            renderItem={renderItem}
-                            keyExtractor={(item) => item.id}
-                            numColumns={3}
-                            contentContainerStyle={styles.wyvernsGrid}
-                            //style={styles.TwoColumnList}
-                            showsVerticalScrollIndicator={false}
-                />              
+                    <FlatList
+                        data={wyvernCollection}
+                        renderItem={renderItem}
+                        keyExtractor={item => item.id}
+                        numColumns={3}
+                        contentContainerStyle={styles.flatListContent}
+                        showsVerticalScrollIndicator={false}
+                        style={styles.flatListLast}
+                    />
+                </View>       
             </View>
         </ImageBackground>
     )
@@ -199,7 +205,7 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         alignItems: 'center',
-        justifyContent: 'center',
+        justifyContent: 'flex-start',
     },
 
     backgroundImage: {
@@ -221,32 +227,6 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         paddingRight: 10
       },
-
-    dragonsGrid: {
-        paddingHorizontal: 20,
-        paddingLeft: 1,
-        justifyContent: 'center',
-    },
-
-    TwoColumnList: {
-        width: '125%'
-    },
-
-    drakesGrid: {
-        // paddingLeft: '23%',
-        // justifyContent: 'center',
-        paddingHorizontal: 20,
-        paddingLeft: 1,
-        justifyContent: 'center',
-    },
-
-    wyvernsGrid: {
-        // paddingLeft: '23%',
-        // justifyContent: 'center',
-        paddingHorizontal: 20,
-        paddingLeft: 1,
-        justifyContent: 'center',
-    },
 
     image: {
         width: 100,
@@ -320,5 +300,14 @@ const styles = StyleSheet.create({
         width: '60%',
         height: '60%',
         resizeMode: 'contain',
+    },
+
+    flatListsWrapper: {
+        width: '100%',
+        alignItems: 'center',
+    },
+
+    flatList: {
+        marginBottom: '1%',
     },
 });
