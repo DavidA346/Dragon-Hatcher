@@ -162,7 +162,7 @@ const itemData = {
         image: require('../assets/item sprites/totems/drake_totem.png'),
         name: 'Totem of Rac Nivt',
         cost: 5000,
-        requirements: { type: 'Drake', count: 2 },
+        requirements: { type: 'Drake', count: 3 },
         effects: {
           clickBonus: 100,
           goldBonus: 6,
@@ -173,7 +173,7 @@ const itemData = {
         image: require('../assets/item sprites/totems/wyvern_totem.png'),
         name: 'Totem of Ga Hib',
         cost: 5000,
-        requirements: { type: 'Wyvern', count: 2 },
+        requirements: { type: 'Wyvern', count: 3 },
         effects: {
           clickBonus: 100,
           goldBonus: 6,

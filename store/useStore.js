@@ -91,11 +91,12 @@ loadItems: async () => {
 
  getHammerBonusClicks: () => {
   const items = get().items.hammers;
-  return items.reduce((total, id) =>{
-    const item = itemData.hammers[id];
-    return total + (item ?.bonusClicks || 0);
-  }, 0)
- },
+  if (!items.length) return 0;
+
+  const lastHammerId = items[items.length - 1];
+  const item = itemData.hammers[lastHammerId];
+  return item?.bonusClicks || 0;
+},
 
  getTotemEffects: (target) => {
   const { items, creatureInventory } = get();
@@ -259,9 +260,8 @@ getCreatureBonus: (type) => {
 
  //Increment gold (only adult creatures) and persist it
   incrementGold: async (creature, id = null) => {
-    console.log('--');
+    //console.log('--');
     set(state => {
-      console.log(get().getEquippedScrolls());
       const type = creature.type.toLowerCase();
       const totemEffects = get().getTotemEffects(creature);
       const goldScrollEffect = get().getScrollEffect('gold')?? 0;
@@ -357,7 +357,7 @@ getCreatureBonus: (type) => {
 
       const adjustedTime = growthTime * multiplier;
 
-      console.log("Time: ", now - creature.hatchedAt);
+      // console.log("Time: ", now - creature.hatchedAt);
 
       if (now - creature.hatchedAt >= adjustedTime) {
         // Show toast when baby grows up
