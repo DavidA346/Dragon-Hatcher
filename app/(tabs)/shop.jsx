@@ -240,6 +240,17 @@ const Shop = () => {
                                             text1: `You bought ${item.name}!`,
                                         });
                                         console.log(`Buying: ${item.name}`, item.category, item.itemId, item.type);
+                                        // if itemId is potion1, start the auto-clicker function (Every 3 seconds)
+                                        if (item.itemId === 'potion1') {
+                                            console.log(`Using potion1, starting auto-clicker`);
+                                            useStore.getState().startPotionOneAutoClicker(3000); // 3000 ms = 3 seconds
+                                        }
+                                        // if itemId is potion2, start the auto-clicker function (Every 5 seconds)
+                                        if (item.itemId === 'potion2') {
+                                            console.log(`Using potion2, starting potion 2 auto-clicker`);
+                                            useStore.getState().startPotionTwoAutoClicker(5000); // 5000 ms = 5 seconds
+                                        }
+                                        
                                     }}
                                     disabled={owned} // disable press if owned
                                 >

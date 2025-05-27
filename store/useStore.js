@@ -27,6 +27,27 @@ const useStore = create((set, get) => ({
 
  /*FUNCTIONS*/
 
+ startPotionOneAutoClicker: (interval) => {
+  const autoClicker = setInterval(() => {
+    // console.log('Potion 1 auto-clicker incrementing egg progress');
+    // Increment egg progress
+    get().incrementEggProgress();
+  }, interval);
+  // Store the autoClicker ID in the zustand state
+  set({ potionOneAutoClicker: autoClicker });
+ },
+
+ // second auto clicker for potion 2
+ startPotionTwoAutoClicker: (interval) => {
+  const autoClicker = setInterval(() => {
+    // console.log('Potion 2 auto-clicker incrementing egg progress');
+    // Increment egg progress
+    get().incrementEggProgress();
+  }, interval);
+  // Store the autoClicker ID in the zustand state
+  set({ potionTwoAutoClicker: autoClicker });
+ },
+
  //item functionality
  getEquippedHammer: () => {
   const hammers = get().items.hammers;
