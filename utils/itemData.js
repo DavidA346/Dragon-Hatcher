@@ -1,7 +1,7 @@
 // utils/itemData.js
 const itemData = {
     hammers: {
-      c: {
+      yur: {
         image: require('../assets/item sprites/hammers/woodenHammer_sprite.png'),
         name: 'Hammer of Yur',
         description: 'Hits eggs. +2 clicks for every Egg click.',
