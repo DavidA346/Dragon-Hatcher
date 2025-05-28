@@ -194,13 +194,6 @@ getScrollMultiplier: (type) => {
   return boost;
 },
 
-getCreatureBonus: (type) => {
-  const goldMult = get().getScrollMultiplier(type);
-  const goldBonus = get().getScrollEffect(type);
-  
-
-},
-
  // Creature Inventory Creation, Loading/Saving, and Adding
  creatureInventory: [],
   // Load inventory
