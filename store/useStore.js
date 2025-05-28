@@ -439,7 +439,7 @@ getCreatureBonus: (type) => {
    get().saveHatchedEggs([]);
    get().saveCurrentEgg(firstEgg); //Reset the egg to the first state
    get().saveInventory([])
-   get().saveItems({
+   get().savedItems({
     hammers: [],
     totems: [],
     scrolls: [],

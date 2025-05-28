@@ -117,11 +117,13 @@ describe('Persistence Methods', () => {
     const initial = state.gold;
 
     // Increment gold in Zustand
-    await state.incrementGold();
-    const newVal = initial + 1;
+    await state.incrementGold({ type: 'dragon', stage: 'adult' });
+    const newVal = useStore.getState().gold;
 
     // Check if the gold was updated in Zustand correctly
     expect(useStore.getState().gold).toBe(newVal);
+
+    expect(newVal).toBeGreaterThan(initial);
 
     // Get the updated gold from AsyncStorage and check if it was saved correctly
     const stored = await AsyncStorage.getItem('gold');

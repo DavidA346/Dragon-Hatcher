@@ -4,17 +4,26 @@ import EggClicker from '../app/(tabs)/index';
 import useStore from '../store/useStore';
 
 //Mocking Zustand store
-jest.mock('../store/useStore', () => ({
-  __esModule: true,
-  default: jest.fn().mockReturnValue({
-    currency: 0,
-    egg: { img: 'egg.png', clicksNeeded: 5, progress: 3 },
+beforeEach(() => {
+  useStore.setState({
+    currency: 3,
+    egg: { img: 'egg.png', clicksNeeded: 5, progress: 3, type: 'dragon' },
     incrementCurrency: jest.fn(),
     incrementEggProgress: jest.fn(),
     initializeStore: jest.fn(),
     resetProgress: jest.fn(),
-  }),
-}));
+    items: {
+      hammers: ['basic'],
+      totems: [],
+      scrolls: { egg: [] },
+      potions: []
+    },
+    getHammerBonusClicks: () => 0,
+    getTotemEffects: () => ({}),
+    getEquippedScrolls: () => ({ egg: null }),
+    getEggBoost: () => 0,
+  });
+});
 
 //Test Cases
 describe('<EggClicker />', () => {
@@ -30,21 +39,14 @@ describe('<EggClicker />', () => {
     //Press the reset button
     fireEvent.press(getByTestId('reset-button'));
     //Check that the resetProgress function is called
-    expect(useStore().resetProgress).toHaveBeenCalled();
-  });
-
-  //Calls incrementCurrency when egg is pressed
-  it('calls incrementCurrency when egg is pressed', () => {
-    const { getByTestId } = render(<EggClicker />);
-    fireEvent.press(getByTestId('egg-button'));
-    expect(useStore().incrementCurrency).toHaveBeenCalled();
+    expect(useStore.getState().resetProgress).toHaveBeenCalled();
   });
 
   //Calls incrementEggProgress when egg is pressed
   it('calls incrementEggProgress when egg is pressed', () => {
     const { getByTestId } = render(<EggClicker />);
     fireEvent.press(getByTestId('egg-button'));
-    expect(useStore().incrementEggProgress).toHaveBeenCalled();
+    expect(useStore.getState().incrementEggProgress).toHaveBeenCalled();
   });
 
   //Displays progress text based on egg data
@@ -56,40 +58,20 @@ describe('<EggClicker />', () => {
   //Calls initializeStore on mount
   it('calls initializeStore on mount', () => {
     render(<EggClicker />);
-    expect(useStore().initializeStore).toHaveBeenCalled();
+    expect(useStore.getState().initializeStore).toHaveBeenCalled();
   });
 
   //Displays currency text when currency is greater than 0
   it('displays currency text when currency is greater than 0', () => {
-    //Mock the Zustand store to simulate a currency value of 3
-    useStore.mockReturnValue({
-      currency: 3,
-      egg: { img: 'egg.png', clicksNeeded: 5, progress: 3 },
-      incrementCurrency: jest.fn(),
-      incrementEggProgress: jest.fn(),
-      initializeStore: jest.fn(),
-      resetProgress: jest.fn(),
-    });
-
+    useStore.setState({ currency: 3 });
     const { getByText } = render(<EggClicker />);
-    //Check that the currency text is displayed
     expect(getByText('Currency: 3')).toBeTruthy();
   });
 
   //Does not display currency text when currency is 0
   it('does not display currency text when currency is 0', () => {
-    //Mock the Zustand store to simulate a currency value of 0
-    useStore.mockReturnValue({
-      currency: 0,
-      egg: { img: 'egg.png', clicksNeeded: 5, progress: 3 },
-      incrementCurrency: jest.fn(),
-      incrementEggProgress: jest.fn(),
-      initializeStore: jest.fn(),
-      resetProgress: jest.fn(),
-    });
-
+    useStore.setState({ currency: 0 });
     const { queryByText } = render(<EggClicker />);
-    //Check that the currency text is not displayed
     expect(queryByText('Currency: 0')).toBeNull();
   });
 });
