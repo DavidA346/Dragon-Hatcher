@@ -1,5 +1,3 @@
-// createEgg.test.js
-
 const { createEgg } = require('../utils/createEgg');
 const creatureData  = require('../utils/creatureData').default;
 
