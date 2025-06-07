@@ -1,7 +1,9 @@
 import useStore from '../store/useStore';
+import * as helpers from '../store/helpers';
 import { createEgg } from '../utils/createEgg';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import itemData from '../utils/itemData';
+import Toast from 'react-native-toast-message';
 
 
 // Zustand Store Cases
@@ -267,6 +269,41 @@ describe('incrementEggProgress Tests', () => {
     // Check if the egg state is reset after hatching
     expect(newState.egg.progress).toBe(0);
   });
+
+  it('should save current egg progress and update egg state if not hatched', async () => {
+    // Setup an egg whose progress is below threshold
+    const initialEgg = {
+      color: 'Blue',
+      type: 'phoenix',
+      rarity: 2,
+      clicksNeeded: 5,
+      progress: 2,   // less than clicksNeeded - 1
+      boosts: 0,
+      img: '',
+    };
+
+    // Seed Zustand state
+    useStore.setState({ egg: initialEgg });
+
+    // Spy/mock saveCurrentEgg function inside Zustand
+    const saveCurrentEggSpy = jest.spyOn(useStore.getState(), 'saveCurrentEgg').mockImplementation(() => {});
+
+    // Call incrementEggProgress
+    await useStore.getState().incrementEggProgress();
+
+    // Verify saveCurrentEgg was called with updated egg (progress incremented by 1)
+    expect(saveCurrentEggSpy).toHaveBeenCalledTimes(1);
+
+    const expectedUpdatedEgg = { ...initialEgg, progress: initialEgg.progress + 1 };
+    expect(saveCurrentEggSpy).toHaveBeenCalledWith(expectedUpdatedEgg);
+
+    // Verify Zustand egg state updated correctly
+    const newEggState = useStore.getState().egg;
+    expect(newEggState.progress).toBe(initialEgg.progress + 1);
+
+    // Cleanup spy
+    saveCurrentEggSpy.mockRestore();
+  });
 });
 
 describe('resetProgress Tests', () => {
@@ -461,6 +498,90 @@ describe('getGoldMultiplier Tests', () => {
   });
 });
 
+describe('getScrollMultiplier edge cases', () => {
+  it('returns number of owned creatures if type scroll is equipped', () => {
+    const scrollId = 's1';
+    itemData.scrolls = {
+      dragon: [
+        {
+          id: scrollId,
+          effects: { goldMultiplier: true },
+        },
+      ],
+    };
+
+    useStore.setState({
+      creatureInventory: [
+        { type: 'dragon', stage: 'adult' },
+        { type: 'dragon', stage: 'adult' },
+      ],
+      items: {
+        hammers: [],
+        totems: [],
+        scrolls: {
+          dragon: [scrollId],
+        },
+        potions: [],
+      },
+    });
+
+    const multiplier = useStore.getState().getScrollMultiplier('dragon');
+    expect(multiplier).toBe(2);
+  });
+
+  it('getScrollMultiplier returns static multiplier for egg scroll', () => {
+    const scrollId = 'eggScroll';
+    itemData.scrolls = {
+      egg: [{ id: scrollId, effects: { goldMultiplier: 3 } }],
+    };
+
+    useStore.setState({
+      items: {
+        scrolls: { egg: [scrollId] },
+        hammers: [],
+        totems: [],
+        potions: [],
+      },
+      creatureInventory: [],
+    });
+
+    expect(useStore.getState().getScrollMultiplier('egg')).toBe(3);
+  });
+});
+
+
+
+describe('incrementGold bonus logic', () => {
+  it('applies totem and scroll bonuses correctly', async () => {
+    const scrollId = 'testScroll';
+    itemData.scrolls = {
+      gold: [{ id: scrollId, effects: { goldBonus: 2, goldMultiplier: 2 } }],
+      dragon: [{ id: 'd1', effects: { goldBonus: 1, goldMultiplier: 2 } }],
+    };
+
+    const creature = { type: 'Dragon', stage: 'adult' };
+
+    useStore.setState({
+      gold: 10,
+      creatureInventory: [creature],
+      items: {
+        hammers: [],
+        totems: ['dragon'],
+        scrolls: {
+          gold: [scrollId],
+          dragon: ['d1'],
+        },
+        potions: [],
+      },
+    });
+
+    await useStore.getState().incrementGold(creature);
+
+    const newGold = useStore.getState().gold;
+    expect(newGold).toBeGreaterThan(10);
+  });
+});
+
 // Add this to store.test.js
 
 describe('getEquippedHammer Tests', () => {
@@ -538,6 +659,52 @@ describe('getTotemEffects Tests', () => {
   });
 });
 
+describe('getScrollEffect default behavior', () => {
+  it('returns 0 when no scroll is equipped', () => {
+    expect(useStore.getState().getScrollEffect('gold')).toBe(0);
+  });
+});
+
+describe('getEggBoost default behavior', () => {
+  it('returns 0 when no scroll is equipped', () => {
+    useStore.setState({
+      items: { hammers: [], totems: [], scrolls: {}, potions: [] },
+    });
+    expect(useStore.getState().getEggBoost()).toBe(0);
+  });
+});
+
+describe('getEggBoost and getScrollEffect edge cases', () => {
+  it('getEggBoost returns 0 when no scroll is equipped', () => {
+    useStore.setState({
+      items: { scrolls: {}, hammers: [], totems: [], potions: [] },
+    });
+    expect(useStore.getState().getEggBoost()).toBe(0);
+  });
+
+  it('getScrollEffect returns 0 when no scroll is equipped', () => {
+    expect(useStore.getState().getScrollEffect('gold')).toBe(0);
+  });
+
+  it('getScrollEffect returns goldBonus if equipped', () => {
+    const scrollId = 'goldScroll';
+    itemData.scrolls = {
+      gold: [{ id: scrollId, effects: { goldBonus: 5 } }],
+    };
+
+    useStore.setState({
+      items: {
+        scrolls: { gold: [scrollId] },
+        hammers: [],
+        totems: [],
+        potions: [],
+      },
+    });
+
+    expect(useStore.getState().getScrollEffect('gold')).toBe(5);
+  });
+});
+
 describe('purchaseItem Tests', () => {
   beforeEach(async () => {
     await AsyncStorage.clear();
@@ -570,6 +737,78 @@ describe('purchaseItem Tests', () => {
 
     const storedGold = await AsyncStorage.getItem('gold');
     expect(storedGold).toBe((hammerCost + 10 - hammerCost).toString());
+  });
+});
+
+describe('purchaseItem edge cases', () => {
+  beforeEach(async () => {
+    await AsyncStorage.clear();
+    jest.clearAllMocks();
+  });
+
+  it('does not purchase an item if already owned', async () => {
+    const hammerId = 'wooden'; // choose a valid hammer ID from itemData
+    const category = 'hammers';
+
+    // Seed item into the store
+    useStore.setState({
+      items: {
+        hammers: [hammerId],
+        totems: [],
+        scrolls: {},
+        potions: [],
+      },
+      gold: 100,
+    });
+
+    // Spy on console.warn to verify it's called
+    const warnSpy = jest.spyOn(console, 'warn').mockImplementation(() => {});
+
+    // Attempt to purchase again
+    await useStore.getState().purchaseItem(category, hammerId);
+
+    // Ensure the warning was issued
+    expect(warnSpy).toHaveBeenCalledWith(`Already own item: ${category}, ${hammerId}, null`);
+
+    // Ensure item wasn't duplicated
+    const state = useStore.getState();
+    expect(state.items.hammers.filter(id => id === hammerId).length).toBe(1);
+  });
+});
+
+describe('purchaseItem warnings', () => {
+  let warnSpy;
+
+  beforeEach(() => {
+    warnSpy = jest.spyOn(console, 'warn').mockImplementation(() => {});
+  });
+
+  afterEach(() => {
+    warnSpy.mockRestore();
+    jest.clearAllMocks();
+  });
+
+  it("logs 'Item doesn't exist' if item is falsy", () => {
+    jest.spyOn(helpers, 'getItem').mockReturnValue(undefined); // item not found
+
+    const purchase = useStore.getState().purchaseItem;
+
+    purchase('category', 'id', null);
+
+    expect(warnSpy).toHaveBeenCalledWith(expect.stringContaining("Item not found"));
+  });
+
+  it("logs 'Not enough money' if item exists but other condition fails", () => {
+    jest.spyOn(helpers, 'getItem').mockReturnValue({ id: 'id', cost: 100 }); // item found
+
+    // Seed store so gold is less than item cost (simulate insufficient money)
+    useStore.setState({ gold: 50 });
+
+    const purchase = useStore.getState().purchaseItem;
+
+    purchase('category', 'id', null);
+
+    expect(warnSpy).toHaveBeenCalledWith("Not enough money");
   });
 });
 
@@ -623,3 +862,69 @@ it('should save and load items from AsyncStorage', async () => {
   expect(useStore.getState().items).toEqual(initialItems);
 });
 
+
+describe('growBabiesToAdults Tests', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+    useStore.setState({
+      creatureInventory: [],
+      items: { hammers: [], totems: [], scrolls: [], potions: [] },
+    });
+  });
+
+  it('should grow baby to adult if enough time has passed', () => {
+    const now = Date.now();
+    const baby = {
+      id: '1',
+      name: 'Red',
+      type: 'Dragon',
+      stage: 'baby',
+      hatchedAt: now - 120000, // over 60s
+      image: 'baby.png',
+    };
+
+    useStore.setState({ creatureInventory: [baby] });
+
+    useStore.getState().growBabiesToAdults();
+
+    const updated = useStore.getState().creatureInventory[0];
+    expect(updated.stage).toBe('adult');
+    expect(Toast.show).toHaveBeenCalled();
+  });
+
+  it('returns the original creature if it has not grown yet', () => {
+    const now = Date.now();
+    
+    const babyNotReady = {
+      id: '2',
+      name: 'Blue',
+      type: 'Dragon',
+      stage: 'baby',
+      hatchedAt: now - 30000, // Less than default 60s growthTimeMs
+      image: 'baby.png',
+    };
+
+    // Setup Zustand state with one baby not ready to grow
+    useStore.setState({
+      creatureInventory: [babyNotReady],
+      items: { hammers: [], totems: [], scrolls: [], potions: [] },
+    });
+
+    // Spy on saveInventory so we can check it was called with expected updated array
+    const saveInventorySpy = jest.spyOn(useStore.getState(), 'saveInventory').mockImplementation(() => {});
+
+    // Call the function under test
+    useStore.getState().growBabiesToAdults();
+
+    // Get updated state
+    const updatedInventory = useStore.getState().creatureInventory;
+
+    // The creature should be unchanged (stage still 'baby')
+    expect(updatedInventory[0]).toEqual(babyNotReady);
+
+    // saveInventory should be called with array containing original creature (not replaced)
+    expect(saveInventorySpy).toHaveBeenCalledWith([babyNotReady]);
+
+    saveInventorySpy.mockRestore();
+  });
+});

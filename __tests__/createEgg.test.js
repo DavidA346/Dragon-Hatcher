@@ -1,5 +1,7 @@
+const creatureDataMock = require('../__mocks__/creatureDataMock');
+jest.mock('../utils/creatureData', () => require('../__mocks__/creatureDataMock'));
 const { createEgg } = require('../utils/createEgg');
-const creatureData  = require('../utils/creatureData').default;
+const creatureData = require('../utils/creatureData');
 
 describe('createEgg()', () => {
   afterEach(() => {
@@ -75,5 +77,36 @@ describe('createEgg()', () => {
     expect(egg.progress).toBe(0);
     expect(egg.boosts).toBe(chosenDef.boosts ?? 0);
     expect(egg.img).toBe(chosenDef.images[0]);
+  });
+
+  it('returns the Finished egg when no eggs are available', () => {
+    // Build an array with all possible egg colors to simulate all hatched
+    const allEggColors = Object.entries(creatureData)
+      .filter(([color, data]) => (data.egg.weight ?? 1) > 0)
+      .map(([color]) => color);
+
+    const egg = createEgg(allEggColors);
+
+    expect(egg).toEqual({
+      color: 'none',
+      type: 'Finished',
+      rarity: 0,
+      clicksNeeded: 0,
+      progress: 0,
+      boosts: null,
+      img: null,
+    });
+  });
+});
+
+describe('createEgg with weight edge cases', () => {
+  it('filters out eggs with weight 0', () => {
+    const egg = createEgg(['Red']); // hatchedEggs includes Red only
+
+    // Egg color should not be Blue (weight 0)
+    expect(egg.color).not.toBe('Blue');
+
+    // Egg color should be Green (weight undefined, treated as 1)
+    expect(['Green']).toContain(egg.color);
   });
 });
