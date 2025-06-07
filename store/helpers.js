@@ -1,6 +1,8 @@
+// helpers.js
+
 import itemData from "../utils/itemData";
 
-//look for item regardless of difference in data formats
+// look for item regardless of difference in data formats
 export const hasItem = (stateItems, category, id, type = null) => {
   const cat = stateItems[category];
   if (!cat) return false;
@@ -9,9 +11,9 @@ export const hasItem = (stateItems, category, id, type = null) => {
     return cat[type].includes(id);
   }
   return cat.includes(id);
-}
+};
 
-//return item
+// return item
 export const getItem = (category, id, type) => {
   if (category === 'scrolls') {
     if (!type || !itemData[category][type]) return null;
@@ -23,7 +25,7 @@ export const getItem = (category, id, type) => {
   return itemData[category][id]; // for hammers, totems
 };
 
-//return updated list of items for async
+// return updated list of items for async
 export const updateItems = (state, category, id, type = null) => {
   let updatedItems;
 
@@ -49,8 +51,9 @@ export const updateItems = (state, category, id, type = null) => {
   }
 
   return updatedItems;
-}
+};
 
-const hasEffect = (effects, effectKey) => {
+// Export hasEffect so tests can import it:
+export const hasEffect = (effects, effectKey) => {
   return effectKey in effects;
 };
