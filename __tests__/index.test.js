@@ -1,6 +1,4 @@
-// File: __tests__/index.test.js  (or wherever your test already lives)
-
-// ─── MOCK itemData — point at the real utils/itemData.js ─────────────────────
+// MOCK itemData — point at the real utils/itemData.js
 jest.mock('../utils/itemData', () => ({
   totems: {
     dragon: {
@@ -22,11 +20,11 @@ jest.mock('../utils/itemData', () => ({
 import React from 'react';
 import { render, fireEvent } from '@testing-library/react-native';
 
-// ─── MOCK useStore — point at the real store/useStore.js ─────────────────────
+// MOCK useStore — point at the real store/useStore.js 
 jest.mock('../store/useStore');
 import useStore from '../store/useStore';
 
-// ─── MOCK Toast + Haptics exactly as your component expects ─────────────────
+// MOCK Toast + Haptics exactly as your component expects 
 jest.mock('react-native-toast-message', () => ({ show: jest.fn() }));
 import Toast from 'react-native-toast-message';
 
@@ -37,10 +35,9 @@ jest.mock('expo-haptics', () => ({
 }));
 import * as Haptics from 'expo-haptics';
 
-// ─── IMPORT EggClicker from app/(tabs)/index.jsx ────────────────────────────
 import EggClicker from '../app/(tabs)/index';
 
-// ─── Helper: build a “default” mock store and allow overrides ─────────────────
+// build a “default” mock store and allow overrides 
 function makeDefaultStore(overrides = {}) {
   return {
     currency: 3,
@@ -97,13 +94,13 @@ describe('<EggClicker />', () => {
   });
 
   it('renders currency text when currency > 0, hides it when currency = 0', () => {
-    // ── Case A: currency > 0
+    // Case A: currency > 0
     storeMock.currency = 7;
     useStore.mockReturnValue(storeMock);
     const { getByTestId, queryByTestId, rerender } = render(<EggClicker />);
     expect(getByTestId('currency-text').props.children.join('')).toBe('Currency: 7');
 
-    // ── Case B: currency = 0
+    // Case B: currency = 0
     storeMock.currency = 0;
     useStore.mockReturnValue(storeMock);
     rerender(<EggClicker />);
@@ -111,7 +108,7 @@ describe('<EggClicker />', () => {
   });
 
   it('renders progress-bar-text correctly when getEggBoost > 0', () => {
-    // clicksNeeded=5, progress=1, boost=0.5 → visible = Math.round(5*(1-0.5)) = 3 → "1 / 3"
+    // clicksNeeded=5, progress=1, boost=0.5  visible = Math.round(5*(1-0.5)) = 3  "1 / 3"
     storeMock.getEggBoost = () => 0.5;
     useStore.mockReturnValue(storeMock);
     const { getByTestId } = render(<EggClicker />);
@@ -159,13 +156,11 @@ describe('<EggClicker />', () => {
   });
 
   it('handles empty or undefined items.hammers without crashing', () => {
-    // ── Case A: items.hammers = []
     storeMock.items.hammers = [];
     useStore.mockReturnValue(storeMock);
     let query = render(<EggClicker />).queryByTestId('hammer-icon-basic');
     expect(query).toBeNull();
 
-    // ── Case B: items.hammers is undefined
     storeMock.items = { totems: [], scrolls: { egg: [] }, potions: [] };
     useStore.mockReturnValue(storeMock);
     query = render(<EggClicker />).queryByTestId(/^hammer-icon-/);
@@ -290,7 +285,7 @@ describe('<EggClicker />', () => {
 });
 describe('Additional edge‐case branches in <EggClicker />', () => {
   it('does nothing (no progress/Toast/Haptics) when clicksNeeded === 0 and egg exists', () => {
-    // Arrange: egg exists but its clicksNeeded is explicitly 0
+    //  egg exists but its clicksNeeded is explicitly 0
     storeMock.egg = {
       img: { uri: 'egg.png' },
       clicksNeeded: 0,
@@ -349,17 +344,14 @@ describe('Additional edge‐case branches in <EggClicker />', () => {
     useStore.getState = () => storeMock;
 
     const { queryByTestId } = render(<EggClicker />);
-    // itemData.hammers["xyz"] is undefined, so the map returns null → no hammer icon
+    // itemData.hammers["xyz"] is undefined, so the map returns null  no hammer icon
     expect(queryByTestId('hammer-icon-xyz')).toBeNull();
   });
 });
-// ──────────────────────────────────────────────────────────────────────────────
-// Append these to the bottom of your existing `index.test.js`:
-// ──────────────────────────────────────────────────────────────────────────────
 
 describe('Edge‐case branches for totem/scroll rendering', () => {
   it('does NOT render a totem icon when items.totems contains an invalid ID', () => {
-    // Arrange: pretend the store thinks we own a totem called "xyz" that doesn't exist in itemData.totems
+    //  pretend the store thinks we own a totem called "xyz" that doesn't exist in itemData.totems
     storeMock.items.totems = ['xyz']; 
     useStore.mockReturnValue(storeMock);
     useStore.getState = () => storeMock;
@@ -370,19 +362,19 @@ describe('Edge‐case branches for totem/scroll rendering', () => {
   });
 
   it('does NOT render a totem icon when items.totems is completely undefined', () => {
-    // Arrange: remove the "totems" key from items
+    // remove the "totems" key from items
     delete storeMock.items.totems;
     useStore.mockReturnValue(storeMock);
     useStore.getState = () => storeMock;
 
     const { queryByTestId } = render(<EggClicker />);
-    // Because items.totems → undefined, `const ownedTotemIds = items.totems || []` → [],
+    // Because items.totems  undefined, `const ownedTotemIds = items.totems || []`  [],
     // so totemImage becomes null, and no totem icon is rendered.
     expect(queryByTestId('totem-icon')).toBeNull();
   });
 
   it('does NOT render a scroll icon when getEquippedScrolls().egg returns an invalid ID', () => {
-    // Arrange: pretend we “equipped” a scroll with ID "badScroll" not found in itemData.scrolls.egg
+    //  pretend we “equipped” a scroll with ID "badScroll" not found in itemData.scrolls.egg
     storeMock.getEquippedScrolls = () => ({ egg: 'badScroll' });
     useStore.mockReturnValue(storeMock);
     useStore.getState = () => storeMock;
@@ -394,13 +386,10 @@ describe('Edge‐case branches for totem/scroll rendering', () => {
     expect(queryByTestId('scroll-icon')).toBeNull();
   });
 });
-// ──────────────────────────────────────────────────────────────────────────────
-// Append these to the very end of __tests__/index.test.js:
-// ──────────────────────────────────────────────────────────────────────────────
 
 describe('Remaining edge‐case branches in <EggClicker />', () => {
   it('applies a hammer bonus (no totem) and shows “+3” when base=1 + hammerBonus=2', () => {
-    // Arrange: no totem owned, but getHammerBonusClicks() returns 2
+    // no totem owned, but getHammerBonusClicks() returns 2
     storeMock.items.totems = [];                        // ensures ownsTotem === false
     storeMock.getHammerBonusClicks = () => 2;            // hammer‐only bonus of +2
     storeMock.getTotemEffects = () => ({ clickBonus: 0 });
@@ -424,7 +413,7 @@ describe('Remaining edge‐case branches in <EggClicker />', () => {
   });
 
   it('renders a totem icon instead of hammer icons when ownsTotem is true AND totemImage exists', () => {
-    // Arrange: We own both a hammer “basic” (default) and a totem “dragon”
+    //  We own both a hammer “basic” (default) and a totem “dragon”
     // In that case, ownedHammerIds.map(...) should enter the branch 
     //   if (ownsTotem && totemImage) { …render totem-icon… }
     storeMock.items.hammers  = ['basic'];
