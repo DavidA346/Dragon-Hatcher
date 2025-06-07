@@ -423,7 +423,7 @@ describe('Hammer Bonus Clicks', () => {
 
 describe('Totem Effects', () => {
   beforeEach(async () => {
-    // ── make sure to await the clear, so initializeStore() really starts from scratch
+    // make sure to await the clear, so initializeStore() really starts from scratch
     await AsyncStorage.clear();
     await useStore.getState().initializeStore();
   });
@@ -445,7 +445,7 @@ describe('Totem Effects', () => {
 
    // Find how many adult creatures are required for this totem
     const requirementCount = itemData.totems[totemId].requirements.count || 0;
-    // Capitalize species (e.g. 'dragon' → 'Dragon') because getTotemEffects lowercases it internally
+    // Capitalize species (e.g. 'dragon'  'Dragon') because getTotemEffects lowercases it internally
     const capitalized = totemId.charAt(0).toUpperCase() + totemId.slice(1);
 
     // Build a dummy creatureInventory array with exactly requirementCount adult creatures
@@ -481,7 +481,7 @@ describe('getGoldMultiplier Tests', () => {
   });
 
   it('returns 1 when no totems are equipped and 2 when a totem is equipped', () => {
-    // No totems → multiplier should be 1
+    // No totems  multiplier should be 1
     expect(useStore.getState().getGoldMultiplier()).toBe(1);
 
     // Equip a totem and verify multiplier becomes 2
@@ -582,7 +582,7 @@ describe('incrementGold bonus logic', () => {
   });
 });
 
-// Add this to store.test.js
+
 
 describe('getEquippedHammer Tests', () => {
   beforeEach(async () => {
@@ -619,10 +619,6 @@ describe('getEquippedHammer Tests', () => {
     expect(useStore.getState().getEquippedHammer()).toBe(expected);
   });
 });
-
-// Add this to store.test.js
-
-// Update the “getTotemEffects Tests” block in store.test.js
 
 describe('getTotemEffects Tests', () => {
   beforeEach(() => {
@@ -814,7 +810,6 @@ describe('purchaseItem warnings', () => {
 
 describe('Auto-Clicker Functions', () => {
   beforeEach(() => {
-    // Use modern fake timers so setInterval returns a number
     jest.useFakeTimers('modern');
   });
 
