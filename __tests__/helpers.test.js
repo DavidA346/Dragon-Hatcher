@@ -1,10 +1,8 @@
-// __tests__/helpers.test.js
-
 import { hasItem, getItem, updateItems, hasEffect } from '../store/helpers';
 import itemData from '../utils/itemData';
 
 describe('helpers.js utilities', () => {
-  // --- Testing hasItem utility function ---
+  // Testing hasItem utility function 
   describe('hasItem', () => {
     const mockState = {
       hammers: ['yur', 'tou'],
@@ -46,7 +44,7 @@ describe('helpers.js utilities', () => {
     });
   });
 
-  // --- Testing getItem utility function ---
+  // testing getItem utility function 
   describe('getItem', () => {
     // Returns a valid scroll object from itemData using correct type and id
     it('returns correct scroll item from itemData', () => {
@@ -74,19 +72,19 @@ describe('helpers.js utilities', () => {
       expect(item).toEqual(itemData.hammers[hammerKey]);
     });
 
-    // ─── New: valid scroll type, but ID not found ⇒ undefined ───────────────────
+    //  valid scroll type, but ID not found = undefined 
     it('returns undefined if scroll ID not found but type is valid', () => {
       // We know itemData.scrolls.egg has at least one entry; pick a bad ID:
       expect(getItem('scrolls', 'not-in-list', 'egg')).toBe(undefined);
     });
 
-    // ─── New: valid category (hammer) but ID not found ⇒ undefined ─────────────
+    // valid category (hammer) but ID not found = undefined 
     it('returns undefined if hammer ID is invalid', () => {
       expect(getItem('hammers', 'invalidHammer')).toBe(undefined);
     });
   });
 
-  // --- Testing updateItems utility function ---
+  // Testing updateItems utility function 
   describe('updateItems', () => {
     const baseState = {
       items: {
@@ -116,14 +114,13 @@ describe('helpers.js utilities', () => {
       expect(updated.totems).toEqual(['drake', 'dragon']);
     });
 
-    // ─── New: potions (else‐branch) ⇒ initial array exists, then add ───────────────
+    // potions (else‐branch) ⇒ initial array exists, then add 
     it('adds a potion to the potions array', () => {
       const updated = updateItems(baseState, 'potions', 'potionX');
       expect(updated.potions).toEqual(['potion1', 'potionX']);
     });
   });
 
-  // ─── Testing hasEffect (now exported) ───────────────────────────────────
   describe('hasEffect', () => {
     it('returns true when the effect key is present', () => {
       const effects = { boost: 2, speed: 5 };
